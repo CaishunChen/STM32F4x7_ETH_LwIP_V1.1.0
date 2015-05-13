@@ -31,6 +31,7 @@
 #include "lwip/dhcp.h"
 #include "ethernetif.h"
 #include "main.h"
+#include "tcp_server.h"
 #include "netconf.h"
 #include "tcpip.h"
 #include <stdio.h>
@@ -191,6 +192,8 @@ void LwIP_DHCP_task(void * pvParameters)
           
           /* Stop DHCP */
           dhcp_stop(&xnetif);
+          
+          //tcpclient_init();
 
 #ifdef USE_LCD      
           iptab[0] = (uint8_t)(IPaddress >> 24);

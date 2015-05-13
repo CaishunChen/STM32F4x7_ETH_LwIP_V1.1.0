@@ -462,3 +462,9 @@ void sys_assert( const char *msg )
     for(;;)
     ;
 }
+#ifdef NO_SYS
+unsigned long sys_now()
+{ 
+  return xTaskGetTickCount();
+}
+#endif

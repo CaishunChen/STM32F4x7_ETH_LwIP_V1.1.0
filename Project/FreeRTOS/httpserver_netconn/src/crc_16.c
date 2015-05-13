@@ -1,5 +1,6 @@
 #include "crc_16.h"
 #include "string.h"
+#include "stdint.h"
 
 static uint16_t ccitt_table[256] = {
 0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
@@ -36,11 +37,9 @@ static uint16_t ccitt_table[256] = {
 0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
 };
 
-uint16_t crc_ccitt(uint8_t *q, uint32_t len)
+uint16_t crc_ccitt(uint8_t *q, uint16_t len)
 {
-  //static uint8_t a[200]={0};
   uint16_t crc = 0;
-  //memcpy(a,q,len);
   while (len-- > 0)
   {
     crc = ccitt_table[(crc >> 8 ^ *q++) & 0xff] ^ (crc << 8);
@@ -68,3 +67,65 @@ uint16_t crc16(uint8_t *buf,uint16_t length)
   }
   return shift;
 }
+
+
+uint16_t GetCRC16( uint8_t* bufData, uint16_t sizeData )
+{
+	uint16_t CRC, i;
+	uint8_t j;
+	CRC = 0;
+	for( i=0; i<sizeData; i++ )
+	{
+		CRC ^= bufData[i];
+		for( j=0; j<8; j++ )
+		{
+			if( CRC & 0x001 )
+			{
+				CRC >>= 1;
+				CRC ^= 0x08408;
+			}
+			else
+			{
+				CRC >>= 1;
+			}
+		}
+	}
+
+	return CRC;
+}
+
+/****************************************************************************
+名称: UART_CRC16_Work()
+说明: CRC16校验程序
+参数: 		*CRC_Buf:数据地址
+                       CRC_Leni:数据长度
+返回:                   CRC_Sumx:校验值
+*****************************************************************************/
+uint16_t UART_CRC16_Work(uint8_t *CRC_Buf,uint8_t CRC_Leni)
+{
+	uint8_t i,j;
+	uint16_t CRC_Sumx;
+
+	CRC_Sumx=0xFFFF;
+	for(i=0;i<CRC_Leni;i++)
+	{
+		CRC_Sumx^=*(CRC_Buf+i);//异或
+		for(j=0;j<8;j++)
+		{
+			if(CRC_Sumx & 0x01)
+			{
+				CRC_Sumx>>=1;	
+				CRC_Sumx^=0xA001;
+			}
+			else
+			{
+				CRC_Sumx>>=1;
+			}
+		}	
+	}
+	return (CRC_Sumx);
+}
+
+
+
+

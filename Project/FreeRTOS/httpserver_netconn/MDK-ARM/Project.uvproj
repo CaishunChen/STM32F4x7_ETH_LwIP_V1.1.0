@@ -503,11 +503,6 @@
               <FilePath>..\src\serial_debug.c</FilePath>
             </File>
             <File>
-              <FileName>tcpecho.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\tcpecho.c</FilePath>
-            </File>
-            <File>
               <FileName>crc_16.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\crc_16.c</FilePath>
@@ -516,6 +511,66 @@
               <FileName>tcp_server.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\tcp_server.c</FilePath>
+            </File>
+            <File>
+              <FileName>user_record.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\user_record.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\bsp\bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>fatfs_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\fatfs_func.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>TASK</GroupName>
+          <Files>
+            <File>
+              <FileName>card_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\card_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>cash_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\cash_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>dgus_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\dgus_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>hopper_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\hopper_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>record_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\record_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>server_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\server_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>start_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\start_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>tkmeal_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\tkmeal_task.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -703,14 +758,14 @@
           <GroupName>STM32F4xx_StdPeriph_Driver</GroupName>
           <Files>
             <File>
-              <FileName>stm32f4xx_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</FilePath>
-            </File>
-            <File>
               <FileName>misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_adc.c</FileName>
@@ -761,6 +816,21 @@
               <FileName>stm32f4xx_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_iwdg.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -886,6 +956,101 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>STM324xx_APP</GroupName>
+          <Files>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\FLASH\flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\SPI\spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\sd\sdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>mmc_sd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\sd\mmc_sd.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart3.c</FilePath>
+            </File>
+            <File>
+              <FileName>serialscreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\serialscreen\serialscreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>printer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\printer\printer.c</FilePath>
+            </File>
+            <File>
+              <FileName>bill.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\bill\bill.c</FilePath>
+            </File>
+            <File>
+              <FileName>voice.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\vioce\voice.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart4.c</FilePath>
+            </File>
+            <File>
+              <FileName>coin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\coins\coin.c</FilePath>
+            </File>
+            <File>
+              <FileName>mini_hopper.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\mini_hopper\mini_hopper.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart1.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\delay\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart5.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FATFS</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\Third_Party\FatFs_vR0.09\src\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\Third_Party\FatFs_vR0.09\src\ff.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>FreeRTOS</GroupName>
           <Files>
             <File>
@@ -928,13 +1093,13 @@
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F407IG</Device>
+          <Device>STM32F407VG</Device>
           <Vendor>STMicroelectronics</Vendor>
           <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x10000000-0x1000FFFF) IROM(0x8000000-0x80FFFFF) CLOCK(25000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"Startup\ST\STM32F4xx\startup_stm32f40_41xxx.s" ("STM32F40/41xxx Startup Code")</StartupFile>
           <FlashDriverDll>UL2CM3(-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_1024 -FS08000000 -FL0100000)</FlashDriverDll>
-          <DeviceId>6104</DeviceId>
+          <DeviceId>6103</DeviceId>
           <RegisterFile>stm32f4xx.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
@@ -945,7 +1110,7 @@
           <SLE66CMisc>-DSTM32F40_41xxx</SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>SFD\ST\STM32F4xx\STM32F40x.sfr</SFDFile>
+          <SFDFile>SFD\ST\STM32F4xx\STM32F40x.SFR</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -1223,7 +1388,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x200000</Size>
+                <Size>0x100000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -1248,7 +1413,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x30000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -1260,7 +1425,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -1278,7 +1443,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F427X,USE_STM324x7I_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\inc;..\..\..\..\Libraries\CMSIS\Include;..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\..\..\..\Libraries\STM32F4x7_ETH_Driver\inc;..\..\..\..\Utilities\STM32_EVAL\Common;..\..\..\..\Utilities\STM32_EVAL\STM324x7I_EVAL;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\netif;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\ipv4;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\port\STM32F4x7;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\port\STM32F4x7\FreeRTOS;..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\portable\RVDS\ARM_CM3;..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include</IncludePath>
+              <IncludePath>..\inc;..\..\..\..\Libraries\CMSIS\Include;..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\..\..\..\Libraries\STM32F4x7_ETH_Driver\inc;..\..\..\..\Utilities\STM32_EVAL\Common;..\..\..\..\Utilities\STM32_EVAL\STM324x7I_EVAL;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\netif;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\ipv4;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\port\STM32F4x7;..\..\..\..\Utilities\Third_Party\lwip-1.4.1\port\STM32F4x7\FreeRTOS;..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\portable\RVDS\ARM_CM3;..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include;..\..\..\..\Utilities\Third_Party\FatFs_vR0.09\inc;..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include;..\TASK\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1419,11 +1584,6 @@
               <FilePath>..\src\serial_debug.c</FilePath>
             </File>
             <File>
-              <FileName>tcpecho.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\tcpecho.c</FilePath>
-            </File>
-            <File>
               <FileName>crc_16.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\crc_16.c</FilePath>
@@ -1432,6 +1592,66 @@
               <FileName>tcp_server.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\tcp_server.c</FilePath>
+            </File>
+            <File>
+              <FileName>user_record.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\user_record.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\bsp\bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>fatfs_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\fatfs_func.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>TASK</GroupName>
+          <Files>
+            <File>
+              <FileName>card_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\card_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>cash_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\cash_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>dgus_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\dgus_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>hopper_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\hopper_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>record_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\record_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>server_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\server_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>start_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\start_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>tkmeal_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TASK\src\tkmeal_task.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1619,14 +1839,14 @@
           <GroupName>STM32F4xx_StdPeriph_Driver</GroupName>
           <Files>
             <File>
-              <FileName>stm32f4xx_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</FilePath>
-            </File>
-            <File>
               <FileName>misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_adc.c</FileName>
@@ -1677,6 +1897,21 @@
               <FileName>stm32f4xx_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_iwdg.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1798,6 +2033,101 @@
               <FileName>stm324x7i_eval_lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_EVAL\stm324x7i_eval_lcd.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>STM324xx_APP</GroupName>
+          <Files>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\FLASH\flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\SPI\spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\sd\sdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>mmc_sd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\sd\mmc_sd.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart3.c</FilePath>
+            </File>
+            <File>
+              <FileName>serialscreen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\serialscreen\serialscreen.c</FilePath>
+            </File>
+            <File>
+              <FileName>printer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\printer\printer.c</FilePath>
+            </File>
+            <File>
+              <FileName>bill.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\bill\bill.c</FilePath>
+            </File>
+            <File>
+              <FileName>voice.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\vioce\voice.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart4.c</FilePath>
+            </File>
+            <File>
+              <FileName>coin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\coins\coin.c</FilePath>
+            </File>
+            <File>
+              <FileName>mini_hopper.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\mini_hopper\mini_hopper.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart1.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\delay\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\usart\uart5.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FATFS</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\Third_Party\FatFs_vR0.09\src\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Utilities\Third_Party\FatFs_vR0.09\src\ff.c</FilePath>
             </File>
           </Files>
         </Group>

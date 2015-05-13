@@ -45,7 +45,7 @@
    
 /* Uncomment SERIAL_DEBUG to enables retarget of printf to  serial port (COM1 on STM32 evalboard) 
 for debug purpose */   
-#define SERIAL_DEBUG 
+//#define SERIAL_DEBUG 
  
 /* MAC ADDRESS*/
 #define MAC_ADDR0   02

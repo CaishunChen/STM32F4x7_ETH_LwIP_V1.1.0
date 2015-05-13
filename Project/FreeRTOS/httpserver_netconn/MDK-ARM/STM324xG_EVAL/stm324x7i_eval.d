@@ -37,4 +37,4 @@
 .\stm324xg_eval\stm324x7i_eval.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
 .\stm324xg_eval\stm324x7i_eval.o: ..\..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_legacy.h
 .\stm324xg_eval\stm324x7i_eval.o: ..\inc\tcp_server.h
-.\stm324xg_eval\stm324x7i_eval.o: ..\inc\crc_16.h
+.\stm324xg_eval\stm324x7i_eval.o: ..\inc\user_record.h

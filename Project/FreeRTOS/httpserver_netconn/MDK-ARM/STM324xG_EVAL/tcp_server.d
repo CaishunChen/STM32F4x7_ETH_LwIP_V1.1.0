@@ -37,8 +37,10 @@
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
 .\stm324xg_eval\tcp_server.o: ..\inc\tcp_server.h
+.\stm324xg_eval\tcp_server.o: ..\inc\user_record.h
 .\stm324xg_eval\tcp_server.o: ..\inc\crc_16.h
-.\stm324xg_eval\tcp_server.o: ..\inc\crc_16.h
+.\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\flash.h
+.\stm324xg_eval\tcp_server.o: ..\inc\FreeRTOSConfig.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip/opt.h
 .\stm324xg_eval\tcp_server.o: ..\inc\lwipopts.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip/debug.h
@@ -53,7 +55,6 @@
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include\FreeRTOS.h
 .\stm324xg_eval\tcp_server.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include\projdefs.h
-.\stm324xg_eval\tcp_server.o: ..\inc\FreeRTOSConfig.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include\portable.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\portable\RVDS\ARM_CM3\portmacro.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include\mpu_wrappers.h

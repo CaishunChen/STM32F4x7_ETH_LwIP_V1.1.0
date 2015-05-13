@@ -84,6 +84,9 @@ void DebugComPort_Init(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
   STM_EVAL_COMInit(COM1, &USART_InitStructure);
+	
+  /*设置中断及接受*/
+	
 }
 
 /**

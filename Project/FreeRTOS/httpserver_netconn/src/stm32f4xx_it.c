@@ -32,6 +32,9 @@
 #include "main.h"
 #include "stm32f4x7_eth.h"
 
+#include "user_record.h"
+#include "mini_hopper.h"
+
 /* Scheduler includes */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -138,11 +141,39 @@ void SysTick_Handler(void)
   * @brief  This function handles External line 10 interrupt request.
   * @param  None
   * @retval None
-  */
+  */  
+uint32_t   CoinsCount=0;
+uint32_t   CoinsOutFlat=1;
+extern uint32_t NewCoinsCnt;
 void EXTI15_10_IRQHandler(void)
 {
+	uint8_t PinStatus;
+    if (EXTI_GetITStatus(EXTI_Line12) != RESET)
+	{
+	    PinStatus=GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_12);
+		if(PinStatus == 0)
+		{
+		  CoinsCount++;
+		  if(CoinsCount == 2)
+			{
+				CoinsCount = 0;
+				UserActMessageWriteToFlash.UserAct.PayForCoins++;
+				UserActMessageWriteToFlash.UserAct.PayAlready++;
+				CoinsTotoalMessageWriteToFlash.CoinTotoal++;
+			}
+		}
+		EXTI_ClearITPendingBit(EXTI_Line12);
+	}
+	
+	if( EXTI_GetITStatus(EXTI_Line10) != RESET)	
+	{
+		Coins_cnt++; 
+		CoinsTotoalMessageWriteToFlash.CoinTotoal--;
+		EXTI_ClearITPendingBit(EXTI_Line10);	
+	}
+	
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
-
+  
   if(EXTI_GetITStatus(ETH_LINK_EXTI_LINE) != RESET)
   {
     /* Give the semaphore to wakeup LwIP task */

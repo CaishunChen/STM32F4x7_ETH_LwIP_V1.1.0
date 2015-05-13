@@ -49,7 +49,7 @@
 /** @addtogroup STM324x7I_EVAL
   * @{
   */
-      
+	  
 /** @addtogroup STM324x7I_EVAL_LOW_LEVEL
   * @{
   */ 
@@ -65,17 +65,6 @@ typedef enum
   LED4 = 3
 } Led_TypeDef;
 
-typedef enum 
-{  
-  BUTTON_WAKEUP = 0,
-  BUTTON_TAMPER = 1,
-  BUTTON_KEY = 2,
-  BUTTON_RIGHT = 3,
-  BUTTON_LEFT = 4,
-  BUTTON_UP = 5,
-  BUTTON_DOWN = 6,
-  BUTTON_SEL = 7
-} Button_TypeDef;
 
 typedef enum 
 {  
@@ -86,11 +75,11 @@ typedef enum
 typedef enum 
 { 
   JOY_NONE = 0,
-  JOY_SEL = 1,
-  JOY_DOWN = 2,
-  JOY_LEFT = 3,
-  JOY_RIGHT = 4,
-  JOY_UP = 5
+  JOY_LEFT = 1,
+  JOY_UP = 2,
+  JOY_RIGHT = 3,
+  JOY_DOWN = 4,
+  JOY_SEL = 5
 } JOYState_TypeDef
 ;
 
@@ -145,33 +134,35 @@ typedef enum
 /**
   * @}
   */ 
-#define USER_KEY_Port         GPIOF
-#define USER_KEY_Pin          GPIO_Pin_10
-#define USER_KEY_RCC_AHBPeriph      RCC_AHB1Periph_GPIOF
+#define USER_KEY_Port                 GPIOF
+#define USER_KEY_Pin                  GPIO_Pin_10
+#define USER_KEY_RCC_AHBPeriph        RCC_AHB1Periph_GPIOF
 /****************************************************************/
-#define WAKEUP_KEY_Port         GPIOA
-#define WAKEUP_KEY_Pin          GPIO_Pin_0
-#define WAKEUP_KEY_RCC_AHBPeriph    RCC_AHB1Periph_GPIOA
+#define WAKEUP_KEY_Port               GPIOA
+#define WAKEUP_KEY_Pin                GPIO_Pin_0
+#define WAKEUP_KEY_RCC_AHBPeriph      RCC_AHB1Periph_GPIOA
 /****************************************************************/
-#define JOY_A_KEY_Port          GPIOE
-#define JOY_A_KEY_Pin         GPIO_Pin_2
-#define JOY_A_KEY_RCC_AHBPeriph     RCC_AHB1Periph_GPIOE
+#define JOY_LEFT_KEY_Port             GPIOE
+#define JOY_LEFT_KEY_Pin              GPIO_Pin_2
+#define JOY_LEFT_KEY_RCC_AHBPeriph    RCC_AHB1Periph_GPIOE
 
-#define JOY_B_KEY_Port          GPIOE
-#define JOY_B_KEY_Pin         GPIO_Pin_3
-#define JOY_B_KEY_RCC_AHBPeriph     RCC_AHB1Periph_GPIOE
+#define JOY_UP_KEY_Port               GPIOE
+#define JOY_UP_KEY_Pin                GPIO_Pin_3
+#define JOY_UP_KEY_RCC_AHBPeriph      RCC_AHB1Periph_GPIOE
 
-#define JOY_C_KEY_Port          GPIOE
-#define JOY_C_KEY_Pin         GPIO_Pin_4
-#define JOY_C_KEY_RCC_AHBPeriph     RCC_AHB1Periph_GPIOE
+#define JOY_RIGHT_KEY_Port            GPIOE
+#define JOY_RIGHT_KEY_Pin             GPIO_Pin_4
+#define JOY_RIGHT_KEY_RCC_AHBPeriph   RCC_AHB1Periph_GPIOE
 
-#define JOY_D_KEY_Port          GPIOE
-#define JOY_D_KEY_Pin         GPIO_Pin_5
-#define JOY_D_KEY_RCC_AHBPeriph     RCC_AHB1Periph_GPIOE
+#define JOY_DOWN_KEY_Port             GPIOE
+#define JOY_DOWN_KEY_Pin              GPIO_Pin_5
+#define JOY_DOWN_KEY_RCC_AHBPeriph    RCC_AHB1Periph_GPIOE
 
-#define JOY_CTR_KEY_Port        GPIOE
-#define JOY_CTR_KEY_Pin         GPIO_Pin_6
-#define JOY_CTR_KEY_RCC_AHBPeriph   RCC_AHB1Periph_GPIOE 
+#define JOY_SEL_KEY_Port              GPIOE
+#define JOY_SEL_KEY_Pin               GPIO_Pin_6
+#define JOY_SEL_KEY_RCC_AHBPeriph     RCC_AHB1Periph_GPIOE 
+
+
 /****************************************************************/
 /** @addtogroup STM324x7I_EVAL_LOW_LEVEL_COM
   * @{
@@ -327,7 +318,7 @@ void STM_EVAL_LEDOn(Led_TypeDef Led);
 void STM_EVAL_LEDOff(Led_TypeDef Led);
 void STM_EVAL_LEDToggle(Led_TypeDef Led);
 void JOYState_GPIO_Init(void);
-int32_t Read_JOYState(void);
+uint32_t Read_JOYState(void);
 void STM_EVAL_COMInit(COM_TypeDef COM, USART_InitTypeDef* USART_InitStruct); 
 void SD_LowLevel_DeInit(void);
 void SD_LowLevel_Init(void); 

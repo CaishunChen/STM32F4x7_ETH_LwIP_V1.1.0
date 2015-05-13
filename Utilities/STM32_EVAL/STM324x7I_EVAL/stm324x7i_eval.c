@@ -221,9 +221,9 @@ void JOYState_GPIO_Init(void)
   
   --------------------------------------------------------------------------------*/
   /* Periph clock enable */
-  RCC_AHB1PeriphClockCmd(USER_KEY_RCC_AHBPeriph | WAKEUP_KEY_RCC_AHBPeriph | JOY_A_KEY_RCC_AHBPeriph |
-               JOY_B_KEY_RCC_AHBPeriph |  JOY_C_KEY_RCC_AHBPeriph |  JOY_D_KEY_RCC_AHBPeriph |
-                JOY_CTR_KEY_RCC_AHBPeriph, ENABLE);
+  RCC_AHB1PeriphClockCmd( JOY_LEFT_KEY_RCC_AHBPeriph  | JOY_UP_KEY_RCC_AHBPeriph |  
+                          JOY_RIGHT_KEY_RCC_AHBPeriph | JOY_DOWN_KEY_RCC_AHBPeriph |
+                          JOY_SEL_KEY_RCC_AHBPeriph , ENABLE);
   
   /* Configure Input pushpull mode */
   GPIO_InitStructure.GPIO_Pin = USER_KEY_Pin;
@@ -231,54 +231,44 @@ void JOYState_GPIO_Init(void)
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(USER_KEY_Port, &GPIO_InitStructure);
-  
 
-  GPIO_InitStructure.GPIO_Pin = WAKEUP_KEY_Pin;
-  GPIO_Init(WAKEUP_KEY_Port, &GPIO_InitStructure);
-
-  GPIO_InitStructure.GPIO_Pin = JOY_A_KEY_Pin;
-  GPIO_Init(JOY_A_KEY_Port, &GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pin = JOY_B_KEY_Pin;
-  GPIO_Init(JOY_B_KEY_Port, &GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pin = JOY_C_KEY_Pin;
-  GPIO_Init(JOY_C_KEY_Port, &GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pin = JOY_D_KEY_Pin;
-  GPIO_Init(JOY_D_KEY_Port, &GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pin = JOY_CTR_KEY_Pin;
-  GPIO_Init(JOY_CTR_KEY_Port, &GPIO_InitStructure);
-  
+  GPIO_InitStructure.GPIO_Pin = JOY_LEFT_KEY_Pin;
+  GPIO_Init(JOY_LEFT_KEY_Port, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = JOY_UP_KEY_Pin;
+  GPIO_Init(JOY_UP_KEY_Port, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = JOY_RIGHT_KEY_Pin;
+  GPIO_Init(JOY_RIGHT_KEY_Port, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = JOY_DOWN_KEY_Pin;
+  GPIO_Init(JOY_DOWN_KEY_Port, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = JOY_SEL_KEY_Pin;
+  GPIO_Init(JOY_SEL_KEY_Port, &GPIO_InitStructure);  
 }
 
 /**
-  * @brief  Read_JOYState.
-  * @param  Key: read the key value 
-  *   This parameter can be one of following parameters:
-  *     @arg KEY1
-  *     @arg KEY2
-  *     @arg KEY3
-  *     @arg KEY4  
-  * @retval None
-  */
-int32_t Read_JOYState(void)
+  * @brief  Returns the current Joystick status.
+  * @param  None
+  * @retval The code of the Joystick key pressed: 
+  *   @arg  JOY_NONE
+  *   @arg  JOY_SEL
+  *   @arg  JOY_DOWN
+  *   @arg  JOY_LEFT
+  *   @arg  JOY_RIGHT
+  *   @arg  JOY_UP
+  **/
+uint32_t Read_JOYState(void)
 {
-  if(!GPIO_ReadInputDataBit(USER_KEY_Port,USER_KEY_Pin))
-    return 0;
-  else if(!GPIO_ReadInputDataBit(WAKEUP_KEY_Port,WAKEUP_KEY_Pin))
-    return 1;
-  else if(!GPIO_ReadInputDataBit(JOY_A_KEY_Port,JOY_A_KEY_Pin))
-    return SignInReq;
-  else if(!GPIO_ReadInputDataBit(JOY_B_KEY_Port,JOY_B_KEY_Pin))
-    return MealComparReq;
-  else if(!GPIO_ReadInputDataBit(JOY_C_KEY_Port,JOY_C_KEY_Pin))
-    return StatuUploadReq;
-  else if(!GPIO_ReadInputDataBit(JOY_D_KEY_Port,JOY_D_KEY_Pin))
-    return GetMealReq;
-  else if(!GPIO_ReadInputDataBit(JOY_CTR_KEY_Port,JOY_CTR_KEY_Pin))
-    return 6;
-  return -1;
+  if(!GPIO_ReadInputDataBit(JOY_LEFT_KEY_Port,JOY_LEFT_KEY_Pin))
+    return JOY_LEFT;
+  else if(!GPIO_ReadInputDataBit(JOY_UP_KEY_Port,JOY_UP_KEY_Pin))
+    return JOY_UP;
+  else if(!GPIO_ReadInputDataBit(JOY_RIGHT_KEY_Port,JOY_RIGHT_KEY_Pin))
+    return JOY_RIGHT;
+  else if(!GPIO_ReadInputDataBit(JOY_DOWN_KEY_Port,JOY_DOWN_KEY_Pin))
+    return JOY_DOWN;
+  else if(!GPIO_ReadInputDataBit(JOY_SEL_KEY_Port,JOY_SEL_KEY_Pin))
+    return JOY_SEL;
+  return JOY_NONE;
 }
-
 
 /**
   * @brief  Configures COM port.

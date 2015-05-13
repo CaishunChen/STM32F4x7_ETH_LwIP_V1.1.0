@@ -144,7 +144,7 @@ static void LCD_PolyLineRelativeClosed(pPoint Points, uint16_t PointCount, uint1
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void delay_ms(uint16_t ms)    
+static void delay_ms(uint16_t ms)    
 { 
 	uint16_t i,j; 
 	for( i = 0; i < ms; i++ )

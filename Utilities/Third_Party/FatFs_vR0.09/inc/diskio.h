@@ -1,11 +1,14 @@
 /*-----------------------------------------------------------------------
-/  Low level disk interface modlue include file
+/  Low level disk interface modlue include file   (C)ChaN, 2010
 /-----------------------------------------------------------------------*/
 
 #ifndef _DISKIO
 
 #define _READONLY	0	/* 1: Remove write functions */
 #define _USE_IOCTL	1	/* 1: Use disk_ioctl fucntion */
+
+#define SD_CARD	 0          //SD卡,卷标为0
+#define EX_FLASH 1	        //外部flash,卷标为1
 
 #include "integer.h"
 

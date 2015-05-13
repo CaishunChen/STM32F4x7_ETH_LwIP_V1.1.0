@@ -1457,7 +1457,7 @@
  * SO_SNDTIMEO processing.
  */
 #ifndef LWIP_SO_SNDTIMEO
-#define LWIP_SO_SNDTIMEO                0
+#define LWIP_SO_SNDTIMEO                1
 #endif
 
 /**
@@ -1516,7 +1516,7 @@
  * LWIP_STATS_DISPLAY==1: Compile in the statistics output functions.
  */
 #ifndef LWIP_STATS_DISPLAY
-#define LWIP_STATS_DISPLAY              0
+#define LWIP_STATS_DISPLAY              1
 #endif
 
 /**
@@ -1736,7 +1736,7 @@
 
 /* Interval in seconds between keepalive echo requests, 0 to disable. */
 #ifndef LCP_ECHOINTERVAL
-#define LCP_ECHOINTERVAL                0
+#define LCP_ECHOINTERVAL                60
 #endif
 
 /* Number of unanswered echo requests before failure. */

@@ -56,6 +56,9 @@
 .\stm324xg_eval\stm32f4xx_it.o: ..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip/pbuf.h
 .\stm324xg_eval\stm32f4xx_it.o: ..\..\..\..\Libraries\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth.h
 .\stm324xg_eval\stm32f4xx_it.o: ..\inc\stm32f4x7_eth_conf.h
+.\stm324xg_eval\stm32f4xx_it.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\delay.h
+.\stm324xg_eval\stm32f4xx_it.o: ..\inc\user_record.h
+.\stm324xg_eval\stm32f4xx_it.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\mini_hopper.h
 .\stm324xg_eval\stm32f4xx_it.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include\FreeRTOS.h
 .\stm324xg_eval\stm32f4xx_it.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h
 .\stm324xg_eval\stm32f4xx_it.o: ..\..\..\..\Utilities\Third_Party\FreeRTOSV7.3.0\include\projdefs.h

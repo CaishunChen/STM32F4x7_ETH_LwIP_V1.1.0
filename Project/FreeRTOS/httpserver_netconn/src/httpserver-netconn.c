@@ -12,7 +12,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define WEBSERVER_THREAD_PRIO    ( configMAX_PRIORITIES - 3 )
+#define WEBSERVER_THREAD_PRIO    ( configMAX_PRIORITIES - 7 )
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/

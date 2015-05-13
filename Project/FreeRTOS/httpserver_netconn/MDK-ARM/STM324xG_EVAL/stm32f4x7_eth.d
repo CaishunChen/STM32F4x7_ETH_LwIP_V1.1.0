@@ -36,6 +36,7 @@
 .\stm324xg_eval\stm32f4x7_eth.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h
 .\stm324xg_eval\stm32f4x7_eth.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h
 .\stm324xg_eval\stm32f4x7_eth.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
+.\stm324xg_eval\stm32f4x7_eth.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\delay.h
 .\stm324xg_eval\stm32f4x7_eth.o: ..\inc\main.h
 .\stm324xg_eval\stm32f4x7_eth.o: ..\inc\stm32f4x7_eth_bsp.h
 .\stm324xg_eval\stm32f4x7_eth.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_EVAL\stm324x7i_eval.h
