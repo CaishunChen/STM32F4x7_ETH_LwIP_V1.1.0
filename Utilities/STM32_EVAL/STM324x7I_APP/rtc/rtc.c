@@ -1,154 +1,174 @@
-#include "rtc.h"
-#include "stdio.h"
-#include "printer.h"
-#include "delay.h"
-Struct_TD TimeDate ;
-static RTC_TimeTypeDef RTC_TimeStructure;
-static RTC_DateTypeDef RTC_DateStructure;	// RTC_DateStruct
-static RTC_InitTypeDef RTC_InitStructure;
-static RTC_AlarmTypeDef  RTC_AlarmStructure;
-static __IO uint32_t AsynchPrediv=0,SynchPrediv=0;
 
-u8 MyRTC_Init(void)
+/* Includes ------------------------------------------------------------------*/
+#include <stdio.h>
+#include <stm32f4xx.h>
+#include "rtc.h"
+#include "delay.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define -----------------------------------------------------------*/
+/* Uncomment the corresponding line to select the RTC Clock source */
+#define RTC_CLOCK_SOURCE_LSE   /* LSE used as RTC source clock */
+/* #define RTC_CLOCK_SOURCE_LSI */ /* LSI used as RTC source clock. The RTC Clock
+									  may varies due to LSI frequency dispersion. */ 
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+RTC_InitTypeDef RTC_InitStructure;
+
+RTC_TimeTypeDef  RTC_TimeStampStructure;
+RTC_DateTypeDef  RTC_TimeStampDateStructure;
+__IO uint32_t AsynchPrediv = 0, SynchPrediv = 0;
+
+uint8_t AppRTC_Init(void)
 {
-  	if (RTC_ReadBackupRegister(RTC_BKP_DR0) != 0x32F2)//Œ¥…Ë÷√ ±º‰
-  	{  
-    	RTC_Config();
-    	RTC_InitStructure.RTC_AsynchPrediv = AsynchPrediv;//RTC “Ï≤Ω≥˝ ˝ £®<0X7F£©
-    	RTC_InitStructure.RTC_SynchPrediv = SynchPrediv;//RTC Õ¨≤Ω≥˝ ˝ £®<0X7FFF£©
-    	RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;//24–° ±÷∆
-    	if(RTC_Init(&RTC_InitStructure) == ERROR)return 1;
-    	RTC_TimeRegulate();//…Ë÷√ ±º‰ 
-  	}
-  	else//“—…Ë÷√ ±º‰
-  	{   
-	    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-	    PWR_BackupAccessCmd(ENABLE);// πƒ‹RTC≤Ÿ◊˜
-	    RTC_WaitForSynchro();//µ»¥˝RTC APBºƒ¥Ê∆˜Õ¨≤Ω
-	    RTC_ClearFlag(RTC_FLAG_ALRAF);//«Â≥˝RTCƒ÷÷”±Í÷æ
-//	    EXTI_ClearITPendingBit(EXTI_Line17);//«Â≥˝÷–∂œœﬂ17±Í÷æ£®ƒ⁄≤ø¡¨Ω”÷¡RTCƒ÷÷”£©
-//		printf("RTC_TimeStructure.RTC_Hours=%d\r\n",RTC_TimeStructure.RTC_Hours);
-//   	printf("RTC_TimeStructure.RTC_Minutes=%d\r\n",RTC_TimeStructure.RTC_Minutes);
-//    	printf("RTC_TimeStructure.RTC_Seconds=%d\r\n",RTC_TimeStructure.RTC_Seconds) ;
-  	}
+	if (RTC_ReadBackupRegister(RTC_BKP_DR0) != 0x32F2)//Êú™ËÆæÁΩÆÊó∂Èó¥
+	//if(1)
+	{
+		RTC_Config();
+		RTC_InitStructure.RTC_AsynchPrediv = AsynchPrediv;//RTC ÂºÇÊ≠•Èô§Êï∞ Ôºà<0X7FÔºâ
+		RTC_InitStructure.RTC_SynchPrediv = SynchPrediv;//RTC ÂêåÊ≠•Èô§Êï∞ Ôºà<0X7FFFÔºâ
+		RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;//24Â∞èÊó∂Âà∂
+		if(RTC_Init(&RTC_InitStructure) == ERROR) return 1;
+		RTC_TimeRegulate();//ËÆæÁΩÆÊó∂Èó¥ 
+	}
+	else  //Â∑≤ËÆæÁΩÆÊó∂Èó¥
+	{
+		/* Check if the Power On Reset flag is set */
+		if (RCC_GetFlagStatus(RCC_FLAG_PORRST) != RESET) {}
+		/* Check if the Pin Reset flag is set */
+		else if (RCC_GetFlagStatus(RCC_FLAG_PINRST) != RESET){}
+			
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+		PWR_BackupAccessCmd(ENABLE);//‰ΩøËÉΩRTCÊìç‰Ωú
+		RTC_WaitForSynchro();//Á≠âÂæÖRTC APBÂØÑÂ≠òÂô®ÂêåÊ≠•
+		RTC_ClearFlag(RTC_FLAG_ALRAF);//Ê∏ÖÈô§RTCÈóπÈíüÊ†áÂøó
+	}
 	return 0;
 }
-  /*******************************************************************************
- * ∫Ø ˝√˚≥∆:RTC_GetTime_HM  µ√µΩ ±º‰                                                               
- * √Ë     ˆ:void                                                                   
+
+/*******************************************************************************
+ * ÂáΩÊï∞ÂêçÁß∞:RTC_Config  ÈÖçÁΩÆRTC                                                               
+ * Êèè    Ëø∞:void                                                                   
  *                                                                               
- *  ‰    »Î:Œﬁ                                                                     
- *  ‰    ≥ˆ:Œﬁ                                                                     
- * ∑µ    ªÿ:Œﬁ                                                                  
- * –ﬁ∏ƒ»’∆⁄:2013ƒÍ4‘¬20»’                                                                    
+ * Ëæì    ÂÖ•:Êó†                                                                     
+ * Ëæì    Âá∫:Êó†                                                                     
+ * Ëøî    Âõû:Êó†                                                                  
+ * ‰øÆÊîπÊó•Êúü:2015Âπ¥5Êúà13Êó•                                                                    
  *******************************************************************************/
 void RTC_Config(void)
 {
-  	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-  	PWR_BackupAccessCmd(ENABLE);// πƒ‹RTC≤Ÿ◊˜
-  	RCC_LSEConfig(RCC_LSE_ON);// π”√Õ‚≤øæß’Ò
-  	while(RCC_GetFlagStatus(RCC_FLAG_LSERDY)==RESET);//µ»¥˝Õ‚≤øæß’Ò◊º±∏∫√
-  	RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);//—°‘ÒRTC ±÷”‘¥  
-  	SynchPrediv=0xFF;
-  	AsynchPrediv=0x7F; 
-  	RCC_RTCCLKCmd(ENABLE);// πƒ‹RTC ±÷”
-  	RTC_WaitForSynchro();//µ»¥˝RTC APBºƒ¥Ê∆˜Õ¨≤Ω
-//	RTC_WakeUpCmd(ENABLE );
+  /* Enable the PWR clock */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+
+  /* Allow access to RTC */
+  PWR_BackupAccessCmd(ENABLE);
+
+#if defined (RTC_CLOCK_SOURCE_LSI)  /* LSI used as RTC source clock*/
+/* The RTC Clock may varies due to LSI frequency dispersion. */
+  /* Enable the LSI OSC */ 
+  RCC_LSICmd(ENABLE);
+
+  /* Wait till LSI is ready */  
+  while(RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET)
+  {
+  }
+
+  /* Select the RTC Clock Source */
+  RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
+
+  SynchPrediv = 0xFF;
+  AsynchPrediv = 0x7F;
+
+#elif defined (RTC_CLOCK_SOURCE_LSE) /* LSE used as RTC source clock */
+  /* Enable the LSE OSC */
+  RCC_LSEConfig(RCC_LSE_ON);
+
+  /* Wait till LSE is ready */  
+  while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)
+  {
+  }
+
+  /* Select the RTC Clock Source */
+  RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
+
+  SynchPrediv = 0xFF;
+  AsynchPrediv = 0x7F;
+    
+#else
+  #error Please select the RTC Clock source inside the main.c file
+#endif /* RTC_CLOCK_SOURCE_LSI */
+
+  /* Enable the RTC Clock */
+  RCC_RTCCLKCmd(ENABLE);
+
+  /* Wait for RTC APB registers synchronisation */
+  RTC_WaitForSynchro();
+
+  /* Enable The TimeStamp */
+  RTC_TimeStampCmd(RTC_TimeStampEdge_Falling, ENABLE);    
 }
 
-  /*******************************************************************************
- * ∫Ø ˝√˚≥∆:RTC_GetTime_HM  µ√µΩ ±º‰                                                               
- * √Ë     ˆ:void                                                                   
+
+/*******************************************************************************
+ * ÂáΩÊï∞ÂêçÁß∞:RTC_TimeShow  Ëé∑ÂèñÊó∂Èó¥                                                              
+ * Êèè    Ëø∞:void                                                                   
  *                                                                               
- *  ‰    »Î:Œﬁ                                                                     
- *  ‰    ≥ˆ:Œﬁ                                                                     
- * ∑µ    ªÿ:Œﬁ                                                                  
- * –ﬁ∏ƒ»’∆⁄:2013ƒÍ4‘¬20»’                                                                    
+ * Ëæì    ÂÖ•:Êó†                                                                     
+ * Ëæì    Âá∫:Êó†                                                                     
+ * Ëøî    Âõû:Êó†                                                                  
+ * ‰øÆÊîπÊó•Êúü:2015Âπ¥5Êúà13Êó•                                                                    
  *******************************************************************************/
-void RTC_GetTime_HM(uint16_t *time)
+void RTC_TimeShow(DATA_TIME_STRUCT *pDataTime)
 {
- 	RTC_GetTime(RTC_Format_BIN, &RTC_TimeStructure);
-//	Hour   =RTC_TimeStructure.RTC_Hours;
-//	Min    =RTC_TimeStructure.RTC_Minutes;
-
-   *time=RTC_TimeStructure.RTC_Hours<<8 | RTC_TimeStructure.RTC_Minutes;
-
-	printf("Time_Save\r\n");
+	RTC_TimeTypeDef RTC_TimeStructure;
+	RTC_DateTypeDef RTC_DateStructure;
+	RTC_GetTime(RTC_Format_BCD, &RTC_TimeStructure);
+	RTC_GetDate(RTC_Format_BCD, &RTC_DateStructure);
+	pDataTime->Hours    =RTC_TimeStructure.RTC_Hours;
+	pDataTime->Minutes  =RTC_TimeStructure.RTC_Minutes;
+	pDataTime->Senconds =RTC_TimeStructure.RTC_Seconds;
+	pDataTime->WeekDay  =RTC_DateStructure.RTC_WeekDay;
+	pDataTime->Date     =RTC_DateStructure.RTC_Date;
+	pDataTime->Month    =RTC_DateStructure.RTC_Month;
+	pDataTime->Year     =RTC_DateStructure.RTC_Year;
+	/* Unfreeze the RTC DR Register */
+   (void)RTC->DR;
 }
 
-  /*******************************************************************************
- * ∫Ø ˝√˚≥∆:RTC_TimeShow   ±º‰œ‘ æ                                                               
- * √Ë     ˆ:void                                                                   
+/*******************************************************************************
+ * ÂáΩÊï∞ÂêçÁß∞:RTC_TimeRegulate  ËÆæÁΩÆÊó∂Èó¥                                                                
+ * Êèè    Ëø∞:void                                                                   
  *                                                                               
- *  ‰    »Î:Œﬁ                                                                     
- *  ‰    ≥ˆ:Œﬁ                                                                     
- * ∑µ    ªÿ:Œﬁ                                                                  
- * –ﬁ∏ƒ»’∆⁄:2013ƒÍ4‘¬20»’                                                                    
+ * Ëæì    ÂÖ•:Êó†                                                                     
+ * Ëæì    Âá∫:Êó†                                                                     
+ * Ëøî    Âõû:Êó†                                                                  
+ * ‰øÆÊîπÊó•Êúü:2015Âπ¥5Êúà13Êó•                                                                    
  *******************************************************************************/
-void RTC_TimeShow()
-{
-  RTC_GetTime(RTC_Format_BIN, &RTC_TimeStructure);
-	RTC_GetDate(RTC_Format_BIN, &RTC_DateStructure);
-	TimeDate.Hours    =RTC_TimeStructure.RTC_Hours;
-	TimeDate.Minutes  =RTC_TimeStructure.RTC_Minutes;
-	TimeDate.Senconds =RTC_TimeStructure.RTC_Seconds;
-	TimeDate.WeekDay  =RTC_DateStructure.RTC_WeekDay;
-	TimeDate.Date     =RTC_DateStructure.RTC_Date;
-	TimeDate.Month    =RTC_DateStructure.RTC_Month;
-	TimeDate.Year     =RTC_DateStructure.RTC_Year;
-}
 
+uint8_t tmp_hour = 0x23, tmp_minute = 0x07, tmp_second = 0x30;
+uint8_t tmp_data = 0x21, tmp_week = 0x02  , tmp_month  = 0x05, tmp_year   = 0x15; 
 
-
-
-  /*******************************************************************************
- * ∫Ø ˝√˚≥∆:RTC_TimeRegulate  …Ë÷√ ±º‰                                                                
- * √Ë     ˆ:void                                                                   
- *                                                                               
- *  ‰    »Î:Œﬁ                                                                     
- *  ‰    ≥ˆ:Œﬁ                                                                     
- * ∑µ    ªÿ:Œﬁ                                                                  
- * –ﬁ∏ƒ»’∆⁄:2013ƒÍ4‘¬20»’                                                                    
- *******************************************************************************/
- 
-  u32 tmp_hh = 0x17, tmp_mm = 0x3b, tmp_ss = 0x01;
-  u32 tmp_yy = 0x09, tmp_m2 = 0x01, tmp_dd = 0x01,tmp_ww=0x01;
 void RTC_TimeRegulate(void)
 {
-	  //printf("Set time\r\n");
-	  RTC_TimeStructure.RTC_H12= RTC_HourFormat_24;		
-   	RTC_TimeStructure.RTC_Hours = tmp_hh;
-    RTC_TimeStructure.RTC_Minutes = tmp_mm;
-    RTC_TimeStructure.RTC_Seconds = tmp_ss;	
-  	if(RTC_SetTime(RTC_Format_BIN, &RTC_TimeStructure)!=ERROR)
-  	RTC_WriteBackupRegister(RTC_BKP_DR0,0x32F2);
-		
-  	RTC_AlarmCmd(RTC_Alarm_A, DISABLE);
-  	RTC_AlarmStructure.RTC_AlarmTime.RTC_H12 = RTC_H12_AM;
-  	RTC_AlarmStructure.RTC_AlarmTime.RTC_Hours = tmp_hh;
-    RTC_AlarmStructure.RTC_AlarmTime.RTC_Minutes = tmp_mm;
-    RTC_AlarmStructure.RTC_AlarmTime.RTC_Seconds = tmp_ss;
-  	RTC_AlarmStructure.RTC_AlarmDateWeekDay = 0x31;
-  	RTC_AlarmStructure.RTC_AlarmDateWeekDaySel = RTC_AlarmDateWeekDaySel_Date;
-  	RTC_AlarmStructure.RTC_AlarmMask = RTC_AlarmMask_DateWeekDay;
-  	RTC_SetAlarm(RTC_Format_BIN, RTC_Alarm_A, &RTC_AlarmStructure);//≈‰÷√RTCƒ÷÷”ºƒ¥Ê∆˜
-  	RTC_ITConfig(RTC_IT_ALRA, ENABLE);// πƒ‹ƒ÷÷”Aµƒ÷–∂œ
-  	RTC_AlarmCmd(RTC_Alarm_A, ENABLE);// πƒ‹ƒ÷÷”A
-	/***********************************
-	“ªœ¬ «≈‰÷√ƒÍ‘¬»’
-	**************************************/		  
-   RTC_DateStructure.RTC_WeekDay = tmp_ww;          // RTC_Weekday_Monday;
-   RTC_DateStructure.RTC_Date = tmp_dd;
-   RTC_DateStructure.RTC_Month =  tmp_m2;           //RTC_Month_January;
-   RTC_DateStructure.RTC_Year = tmp_yy;
-   if(RTC_SetDate(RTC_Format_BIN, &RTC_DateStructure)!=ERROR)
-   RTC_WriteBackupRegister(RTC_BKP_DR0,0x32F2);	  	    
-   RTC_DateStructInit(&RTC_DateStructure);	  //
-}
-
-void RTC_AlarmShow()
-{
-  	RTC_GetAlarm(RTC_Format_BIN, RTC_Alarm_A, &RTC_AlarmStructure);
+	//ÈÖçÁΩÆÊó∂Èó¥
+	RTC_TimeTypeDef RTC_TimeStructure;
+	RTC_DateTypeDef RTC_DateStructure;
+	
+	RTC_TimeStructure.RTC_H12= RTC_HourFormat_24;		
+	RTC_TimeStructure.RTC_Hours = tmp_hour;
+	RTC_TimeStructure.RTC_Minutes = tmp_minute;
+	RTC_TimeStructure.RTC_Seconds = tmp_second;	
+	if(RTC_SetTime(RTC_Format_BCD, &RTC_TimeStructure)!=ERROR)
+	RTC_WriteBackupRegister(RTC_BKP_DR0,0x32F2);
+	//ÈÖçÁΩÆÊó•Êúü	  
+	RTC_DateStructure.RTC_WeekDay = tmp_week;
+	RTC_DateStructure.RTC_Date = tmp_data;
+	RTC_DateStructure.RTC_Month =  tmp_month;
+	RTC_DateStructure.RTC_Year = tmp_year;
+	if(RTC_SetDate(RTC_Format_BCD, &RTC_DateStructure)!=ERROR)
+	RTC_WriteBackupRegister(RTC_BKP_DR0,0x32F2);	  	    
+	RTC_DateStructInit(&RTC_DateStructure);
 }
 
 

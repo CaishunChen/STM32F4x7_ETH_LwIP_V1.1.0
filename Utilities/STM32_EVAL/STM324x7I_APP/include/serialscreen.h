@@ -50,7 +50,7 @@
 
 /*剩余菜品变量地址*/
 #define meal1st_left     0x0021 /*第一份菜品剩余的位置*/
-#define meal2nd_left	 0x0022 /*第二份菜品剩余的位置*/
+#define meal2nd_left		 0x0022 /*第二份菜品剩余的位置*/
 #define meal3rd_left     0x0023 /*第三份菜品剩余的位置*/
 #define meal4th_left     0x0024 /*第四份菜品剩余的位置*/
 //

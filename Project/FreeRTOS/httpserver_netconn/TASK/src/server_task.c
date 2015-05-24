@@ -10,15 +10,12 @@
 
 #define  SERVER_TASK_PRIO  ( tskIDLE_PRIORITY + 2 )
 
-
-
 void Server_task(void * pvParameters)
 {
 	portBASE_TYPE xStatus;
 	xQueueHandle xUpload;
 	uint32_t lReceivedValue,lSendValue;
 	const portTickType xTicksToWait =  1 / portTICK_RATE_MS;
-	
 	lSendValue = SignInReq;
 	xUpload = xQueueCreate( 5, sizeof( uint32_t ) );
 	xStatus = xQueueSend(xUpload,&lSendValue,10);
@@ -49,7 +46,7 @@ void Server_task(void * pvParameters)
 					Uart5_Send(statu_upload_buf,sizeof(statu_upload_buf));  //发送数据                                
 				};break;
 				case TkMealReq:{
-					auto uint8_t tk_meal_buf[Totoal_StatuUpload_Lenth+ 8]={0};  //使用auto，该类具有自动存储期
+					auto uint8_t tk_meal_buf[Tk_Meal_Lenth+ 8]={0};  //使用auto，该类具有自动存储期
 					package_buff(StatuUploadReq,tk_meal_buf);   //将要发送的数据填入sendbuf    
 					Uart5_Send(tk_meal_buf,sizeof(tk_meal_buf));  //发送数据   					
 				};break;

@@ -151,11 +151,11 @@ typedef enum
 #define JOY_UP_KEY_RCC_AHBPeriph      RCC_AHB1Periph_GPIOE
 
 #define JOY_RIGHT_KEY_Port            GPIOE
-#define JOY_RIGHT_KEY_Pin             GPIO_Pin_4
+#define JOY_RIGHT_KEY_Pin             GPIO_Pin_5
 #define JOY_RIGHT_KEY_RCC_AHBPeriph   RCC_AHB1Periph_GPIOE
 
 #define JOY_DOWN_KEY_Port             GPIOE
-#define JOY_DOWN_KEY_Pin              GPIO_Pin_5
+#define JOY_DOWN_KEY_Pin              GPIO_Pin_4
 #define JOY_DOWN_KEY_RCC_AHBPeriph    RCC_AHB1Periph_GPIOE
 
 #define JOY_SEL_KEY_Port              GPIOE

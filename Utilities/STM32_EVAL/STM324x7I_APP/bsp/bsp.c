@@ -16,6 +16,7 @@
 #include "delay.h"
 #include "uart5.h"
 #include "flash.h"
+#include "rtc.h"
  /*******************************************************************************
  * 函数名称:WaitTimeInit                                                                     
  * 描    述:把WaitTime从新安排到新的值                                                                  
@@ -1404,13 +1405,9 @@ void ErrRecHandle(void)
 	纸币机               串口4                     0                2
 	IC卡                 串口2                     0                3  
 	屏幕                 串口中断3                 0                4
-						 CAN通信                   0                5
 	打印                 串口1                     0                6
 	退币倒计时           定时器4                   1                0
 	定时倒计时60s        定时器3                   1                1
-	驱动电机             定时器2                   1                2
-	驱动电机             外部中断4                 1                3
-	定时采集温度采集     定时器7                   1                4
  */
 	/*******************************************************************************
  * 函数名称:hardfawreInit                                                                     
@@ -1423,28 +1420,17 @@ void ErrRecHandle(void)
  *******************************************************************************/ 
 void HardwaveInit(void)
 {
-	//初始化存放位置数据结构体
-	for(uint8_t i = 0; i <MealKindTotoal; i++)
-	{
-		DefineMeal[i].MealPrice = 0;
-		DefineMeal[i].MealCount = 0;
-		for(uint8_t j = 0; j < 15; j++)
-		{
-			for(uint8_t k = 0; k < 3; k++)
-			{
-				DefineMeal[i].Position[j][k] = 0; 
-			}
-		}
-	}
 	Uart4_Configuration();     //纸币机串口初始化 1, 2
 	Uart1_Configuration();     //打印机串口初始化
 	Uart3_Configuration();     //串口屏初始化  0 , 3
-    Uart5_Configuration();     //服务器通信初始化
+	Uart5_Configuration();     //服务器通信初始化
+	AppRTC_Init();             //RTC初始化
+	RTC_TimeRegulate();      //设置时间
 	
 	InitCoins();               //投币机初始化
 	InitMiniGPIO() ;           //退币器始化   
 	InitVoice();               //语音初始化
 	SPI_Flash_Init();          //flash提前初始化
 	
-    IWDG_WriteAccessCmd(IWDG_WriteAccess_Disable); //关闭看门狗 
+	IWDG_WriteAccessCmd(IWDG_WriteAccess_Disable); //关闭看门狗 
 }   

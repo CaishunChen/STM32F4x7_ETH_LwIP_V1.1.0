@@ -40,7 +40,7 @@
 #define ETHARP_TRUST_IP_MAC     1
 #define IP_REASSEMBLY           0
 #define IP_FRAG                 0
-#define ARP_QUEUEING            1
+#define ARP_QUEUEING            0
 
 /**
  * NO_SYS==1: Provides VERY minimal functionality. Otherwise,

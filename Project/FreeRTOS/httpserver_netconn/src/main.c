@@ -26,7 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "string.h"
+#include <string.h>
+#include <arm_math.h>
+#include <stm32f4xx.h>
 #include "stm32f4x7_eth.h"
 #include "netconf.h"
 #include "main.h"
@@ -50,9 +52,10 @@
 #include "server_task.h"
 #include "start_task.h"
 #include "tkmeal_task.h"
+#include "wanwuyun_task.h"
+#include "rtc.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-
 /*--------------- LCD Messages ---------------*/
 #if defined (STM32F40XX)
 #define MESSAGE1   "    STM32F40/41x     "
@@ -99,6 +102,7 @@ int main(void)
 
 	/* Configures the priority grouping: 4 bits pre-emption priority */
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	
 	/* Init task */
 	xTaskCreate(Main_task,(int8_t *)"Main", configMINIMAL_STACK_SIZE * 2, NULL,MAIN_TASK_PRIO, NULL);
 	
@@ -115,7 +119,7 @@ int main(void)
   * @param  pvParameters not used
   * @retval None
   */
-
+#if 0
 void Main_task(void * pvParameters)
 {
 	static xTaskHandle xHandle;
@@ -136,17 +140,17 @@ void Main_task(void * pvParameters)
 		vTaskDelete(xHandle);
 	}
 }
-
+#endif
 /**
   * @brief  Main task
   * @param  pvParameters not used
   * @retval None
   */
-#if 0
+#if 1
 void Main_task(void * pvParameters)
 {
 #ifdef SERIAL_DEBUG
-	DebugComPort_Init();;
+	DebugComPort_Init();
 #endif
 
 	/*Initialize LCD and Leds */ 
@@ -155,25 +159,31 @@ void Main_task(void * pvParameters)
 	/* configure Ethernet (GPIOs, clocks, MAC, DMA) */ 
 	ETH_BSP_Config();
 
+	/*Initialize RTC */ 
+	AppRTC_Init();
+	
 	/* Initilaize the LwIP stack */
 	LwIP_Init();
 
 	/* Initialize webserver demo */
-	http_server_netconn_init();
+	//http_server_netconn_init();
 	
 	/* Initialize tcpserver demo */
 	//tcpecho_init();
 	
 	/* Initialize tcpcliennt demo */
-	tcpclient_init();
-  
+	Tcpclient_Init();
+	
+	/* Initialize wanwuyun demo */
+    Wanwuyun_Init();
+	
 #ifdef USE_DHCP
   /* Start DHCPClient */
 	xTaskCreate(LwIP_DHCP_task, (int8_t *) "DHCP", configMINIMAL_STACK_SIZE * 2, NULL,DHCP_TASK_PRIO, NULL);
 #endif
 
 	/* Start toogleLed4 task : Toggle LED4  every 250ms */
-	xTaskCreate(ToggleLed4, (int8_t *) "LED4", configMINIMAL_STACK_SIZE, NULL, LED_TASK_PRIO, NULL);
+	xTaskCreate(ToggleLed4, (int8_t *) "LED4", DEFAULT_THREAD_STACKSIZE, NULL, LED_TASK_PRIO, NULL);
 	
 	/* Start keyscan4 task : scan 4 kinds of keys  every 250ms */
 	xTaskCreate(KeyScan4, (int8_t *) "KEY4", configMINIMAL_STACK_SIZE, NULL, KEY_TASK_PRIO, NULL);
@@ -190,14 +200,24 @@ void Main_task(void * pvParameters)
   * @param  pvParameters not used
   * @retval None
   */
-
+static DATA_TIME_STRUCT DataTime;
+SENSOR_STRUCT  Sensor,*pSensor;
+//如何加入浮点运算
 void ToggleLed4(void * pvParameters)
 {
+	
 	//static portCHAR PAGE_BODY[512]={0x00};
+	memcpy(Sensor.dev_id,"stm32_test",strlen("stm32_test"));
+	Sensor.temperature[0] = 25.6;
+	Sensor.latitude[0] = 143.5;
+	Sensor.longitude[0] = 145.123;
 	for( ;; )
 	{
 		/* Toggle LED4 each 250ms */
 		STM_EVAL_LEDToggle(LED4);
+		//RTC_TimeShow(&DataTime); 
+		pSensor = &Sensor;
+		xQueueSend(pRxSensor_xQueue,( void * )&pSensor,( portTickType )10);
 		//串口输出任务的状态
 		//vTaskList((signed char *)(PAGE_BODY ));
 		//vPrintString("%s",PAGE_BODY);
@@ -215,42 +235,43 @@ extern xQueueHandle xQueue;
 extern long lReceivedValue;
 void KeyScan4(void * pvParameters)
 {
-	long cmd = SignInReq;
+	long cmd;
 	uint32_t key_value;
 	portBASE_TYPE xStatus;
 	JOYState_GPIO_Init();
-	xStatus = xQueueSend(xQueue,&cmd,0);
 	for(;;)
 	{
 		if((key_value = Read_JOYState())>0)
 		{
 			switch(key_value)
 			{
-				case 3:{cmd = SignInReq;};break;
-				case 4:{cmd = MealComparReq;};break;
-				case 5:{cmd = StatuUploadReq;};break;
-				case 6:{cmd = TkMealReq;};break;
+				case JOY_LEFT:{cmd = SignInReq;};break;
+				case JOY_UP:{cmd = MealComparReq;};break;
+				case JOY_RIGHT:{cmd = StatuUploadReq;};break;
+				case JOY_DOWN:{cmd = EchoReq;};break;
+				case JOY_SEL:{cmd = TkMealReq;};break;
 				default:{cmd = 0;}break;
 			}
 			//vPrintString("cmd = %04X,\r\n",cmd);
-			xStatus = xQueueSend(xQueue,&cmd,0);
+			xStatus = xQueueSend(xQueue,&cmd,5);
 			if(xStatus!= pdPASS)
 			{
-//                switch(xStatus)
-//                {
-//                    case errQUEUE_FULL:vPrintString("errQUEUE_FULL.\r\n");break;
-//                    case errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY:vPrintString("errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY.\r\n");break;
-//                    case errNO_TASK_TO_RUN:vPrintString("errNO_TASK_TO_RUN.\r\n");break;
-//                    case errQUEUE_BLOCKED:vPrintString("errQUEUE_BLOCKED.\r\n");break;
-//                    case errQUEUE_YIELD:vPrintString("errQUEUE_YIELD.\r\n");break;
-//                }
+				switch(xStatus)
+				{
+					case errQUEUE_FULL:vPrintString("errQUEUE_FULL.\r\n");break;
+					case errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY:vPrintString("errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY.\r\n");break;
+					case errNO_TASK_TO_RUN:vPrintString("errNO_TASK_TO_RUN.\r\n");break;
+					case errQUEUE_BLOCKED:vPrintString("errQUEUE_BLOCKED.\r\n");break;
+					case errQUEUE_YIELD:vPrintString("errQUEUE_YIELD.\r\n");break;
+				}
 			}
 			else
-			{                
+			{
 				taskYIELD();
+				vTaskDelay(100);
 			}
 		}
-		vTaskDelay(200);
+		vTaskDelay(250);
 	}
 }
 

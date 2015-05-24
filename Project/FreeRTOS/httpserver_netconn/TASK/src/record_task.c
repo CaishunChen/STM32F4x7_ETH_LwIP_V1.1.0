@@ -6,6 +6,7 @@
 #include "diskio.h"
 #include "ff.h"
 #include "flash.h"
+#include "cjson.h"
 
 #define  RECORD_TASK_PRIO  ( tskIDLE_PRIORITY + 4 )
 
@@ -24,7 +25,7 @@ void Record_task(void * pvParameters)
 	uint32_t   bw = 0;
 	static xTaskHandle xHandle;
 	static uint8_t fbuf[512] = {0};
-	
+	static uint8_t dev_id_t[10]={0};
 	/*flash擦除*/
 	//SPI_Flash_Init();
 	//SPI_Flash_Erase_Chip();	
@@ -54,9 +55,38 @@ void Record_task(void * pvParameters)
 	res = f_read(&fil_flash,fbuf,512,&br);
 	res = f_close(&fil_flash); 
 	  
-	//需要初始化才行，SPI_Flash_Init 不行(why?)
+//需要初始化才行，SPI_Flash_Init 不行(why?)
 //	SPI_Flash_Write(tx_buff,USER_RECORD_STAR,sizeof(tx_buff));
 //	SPI_Flash_Read(rx_buff,USER_RECORD_STAR,sizeof(tx_buff)); 	
+
+//转换config.txt的文件为配置
+#if 0	
+	char text1[]="{	\"dev_id\":	\"10000038\",  \"ver\":  \"V4.01\",	\"data\":  20150505 }";
+	char text2[]="{\n		\"Config\": {\n			\"Devid\":  \"10000038\",\n			\"ver\": \"V4.01\",\n			\"data\":  \"2015-05-05\"	\n	}\n	}";
+	char *out;cJSON *json;
+    uint8_t dev_id_t[10]={0};
+	static double DATA=0; 
+	json=cJSON_Parse(text1);
+	if (!json) 
+	{
+		printf("Error before: [%s]\n",cJSON_GetErrorPtr());
+	}
+	cJSON *DEVID  = cJSON_GetObjectItem(json,"dev_id");
+	if( DEVID->type == cJSON_String ) 
+	{
+		sprintf((char *)dev_id_t,"%s",DEVID->valuestring);
+	}
+	cJSON *VER  = cJSON_GetObjectItem(json,"ver");
+	if( VER->type == cJSON_String ) 
+	{
+		sprintf((char *)dev_id_t,"%s",VER->valuestring);
+	}	
+	
+	DATA  = cJSON_GetObjectItem(json,"data")->valuedouble;
+	cJSON_Delete(VER);
+	cJSON_Delete(DEVID);
+	cJSON_Delete(json);
+#endif
 	
 	for(;;)
 	{

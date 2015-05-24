@@ -40,7 +40,9 @@
 .\stm324xg_eval\tcp_server.o: ..\inc\user_record.h
 .\stm324xg_eval\tcp_server.o: ..\inc\crc_16.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\flash.h
+.\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\rtc.h
 .\stm324xg_eval\tcp_server.o: ..\inc\FreeRTOSConfig.h
+.\stm324xg_eval\tcp_server.o: ..\inc\cjson.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip/opt.h
 .\stm324xg_eval\tcp_server.o: ..\inc\lwipopts.h
 .\stm324xg_eval\tcp_server.o: ..\..\..\..\Utilities\Third_Party\lwip-1.4.1\src\include\lwip/debug.h

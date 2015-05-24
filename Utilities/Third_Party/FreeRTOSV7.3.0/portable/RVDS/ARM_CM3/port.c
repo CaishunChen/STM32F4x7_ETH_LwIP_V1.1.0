@@ -115,6 +115,7 @@ is defined. */
 
 /* Constants required to set up the initial stack. */
 #define portINITIAL_XPSR			( 0x01000000 )
+#define portINITIAL_EXC_RETURN		( 0xFFFFFFFD )
 
 /* Each task maintains its own interrupt status in the critical nesting
 variable. */
@@ -183,6 +184,21 @@ portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE *pxTopOfStack, pdTASK_CODE
 	*pxTopOfStack = ( portSTACK_TYPE ) pvParameters;	/* R0 */
 	pxTopOfStack -= 8;	/* R11, R10, R9, R8, R7, R6, R5 and R4. */
 
+	/*FPU fixes*/
+//#if 0
+	pxTopOfStack--;
+	*pxTopOfStack = 0xfffffffd; /* non floating point exception return */
+	//Set FPU register to default values
+	pxTopOfStack--;
+	*pxTopOfStack = 0x00000000;		/*Floating-point Context Address Register (FPCAR) */
+	pxTopOfStack--;
+	/*Floating-point Context Control Register (FPCCR).
+	 * Reset value is 0xC0000000 we have to disable bit 30 (LSPEN) lazy state preservation*/
+	*pxTopOfStack = 0x80000000;
+	//*pxTopOfStack = 0xC0000000;
+	pxTopOfStack--; /*alignment*/
+//#endif
+
 	return pxTopOfStack;
 }
 /*-----------------------------------------------------------*/
@@ -194,6 +210,17 @@ __asm void vPortSVCHandler( void )
 	ldr	r3, =pxCurrentTCB	/* Restore the context. */
 	ldr r1, [r3]			/* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
 	ldr r0, [r1]			/* The first item in pxCurrentTCB is the task top of stack. */
+	/*FPU fixes*/
+//#if 0
+	add r0, #4	 			/* ignore alignment*/
+	ldmia r0!, { r4-r5 }	/* pop the FPU registers FPCCR, FPCAR */
+	movw r6, #0xEF34		
+	movt r6, #0xE000		
+	stm r6!, { r4-r5 }		 /* restore FPCCR, FPCAR */
+	ldmia r0!, { lr }		
+	//"	add r0, #4			
+//#endif	
+	
 	ldmia r0!, {r4-r11}		/* Pop the registers that are not automatically saved on exception entry and the critical nesting count. */
 	msr psp, r0				/* Restore the task stack pointer. */
 	mov r0, #0
@@ -290,6 +317,17 @@ __asm void xPortPendSVHandler( void )
 	ldr	r2, [r3]
 
 	stmdb r0!, {r4-r11}			/* Save the remaining registers. */
+//#if 0
+	/*FPU fixes*/
+	stmdb r0!, { lr }           /* store lr register to know exception return code */
+	/* store FPU registers FPCCR, FPCAR */
+	/* r4, r5, r6 has already been stored so we can use them now */
+	movw r6, #0xEF34		
+	movt r6, #0xE000		
+	ldm r6!, { r4, r5 }		
+	stmdb r0!, { r4, r5 }   
+	sub r0, #4					/* alignment */
+//#endif	
 	str r0, [r2]				/* Save the new top of stack into the first member of the TCB. */
 
 	stmdb sp!, {r3, r14}
@@ -302,9 +340,20 @@ __asm void xPortPendSVHandler( void )
 
 	ldr r1, [r3]
 	ldr r0, [r1]				/* The first item in pxCurrentTCB is the task top of stack. */
+//#if 0
+	/*FPU fixes*/
+	add r0, #4					/* ignore alignment*/
+	ldmia r0!, { r4, r5 }		/* pop the FPU registers FPCCR, FPCAR */
+	movw r6, #0xEF34			
+	movt r6, #0xE000			
+	stm r6!, { r4, r5 }			/* restore FPCCR, FPCAR */
+	ldmia r0!, { lr }			/* j.vozab - Pop lr register (exception return code) */
+//#endif	
+	
 	ldmia r0!, {r4-r11}			/* Pop the registers and the critical nesting count. */
 	msr psp, r0
 	bx r14
+	nop
 	nop
 }
 /*-----------------------------------------------------------*/

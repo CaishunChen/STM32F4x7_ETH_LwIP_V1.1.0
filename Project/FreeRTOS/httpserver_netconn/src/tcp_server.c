@@ -35,7 +35,9 @@
 #include "tcp_server.h"
 #include "crc_16.h"
 #include "flash.h"
+#include "rtc.h"
 #include "FreeRTOSConfig.h"
+#include "cjson.h"
 
 #include "lwip/opt.h"
 
@@ -54,6 +56,8 @@ __attribute__ ((aligned (1)))
 /*TCP client send data mark  */    
 uint8_t tcp_client_flag;
 
+/*交易流水号（累加）*/
+uint32_t BatchNum = 0;
 
 /*TAG table Value detail*/
 uint8_t  Tid[TidLen] = {0x10,0x00,0x00,0x38};
@@ -64,15 +68,28 @@ uint8_t  DealData[DealDataLen]={0x00,0x00,0x00,0x00};
 uint8_t  DealTime[DealTimeLen]={0x00,0x00,0x00};
 uint8_t  DevArae[DevAraeLen]={0x17,0x03,0x02};
 uint8_t  DevSite[DevSiteLen]={0x17,0x03,0x02,0x07};
-uint8_t  AppVer[AppVerLen]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
-uint8_t  ParaFileVer[ParaFileVerLen]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
-uint8_t  BusiDatFileVer[BusiDatFileVerLen]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01};
-uint8_t  CkSta[CkStaLen]={0x00,0x00};
-uint8_t  UpDatFlag[UpDatFlagLen]={0x00};
-uint8_t  CoinNum[CoinNumLen]={0x00,0x00};
-uint8_t  DevStatu[DevStatuLen]={0x00,0x00};
-uint8_t  Mac[6]={0x00};
-uint8_t  MealCompar[36*4]={0x00};
+uint8_t  AppVer[AppVerLen]={"010312"};  //V1.3.12,则为字符串“010312”
+uint8_t  ParaFileVer[ParaFileVerLen]={"010313"};  //V1.3.12,则为字符串“010312”
+uint8_t  BusiDatFileVer[BusiDatFileVerLen]={"010314"};  //V1.3.12,则为字符串“010312”
+uint8_t  CkSta[CkStaLen]={0x00,0x00};	 //自检状态
+uint8_t  UpDatFlag[UpDatFlagLen]={0x00};  //更新标识
+uint8_t  CoinNum[CoinNumLen]={0x00,0x10};	//硬币数
+uint8_t  DevStatu[DevStatuLen]={0xE8,0x00};  //设备状态
+uint8_t  Mac[MacLen]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}; //加密密钥
+//uint8_t  MealCompar[36*4]={0x00};
+uint8_t  Tradvol[TradvolLen]={0x00,0x00,0x00,0x00,0x15,0x00};	//交易金额
+uint8_t  MealId[MealIdLen]={0x10,0x00,0x01,0x38}; //餐品ID
+uint8_t  MealQty[MealQtyLen]={0x01}; //餐品数量
+uint8_t  MealName[MealNameLen]={0xB7,0xC6,0xC4,0xAA,0xCB,0xB9,0xC5,0xA3,0xC8,0xE2};	//餐品名
+uint8_t  MealPrice[MealPriceLen]={0x00,0x00,0x00,0x00,0x15,0x00};		//餐品单价
+uint8_t  PayType[PayTypeLen]={0x31};	//支付方式
+uint8_t  Change[ChangeLen]={0x00,0x00,0x00,0x00,0x15,0x00};		//找零
+uint8_t  RmnMealQty[RmnMealQtyLen]={0x00,0x1};	//剩余数量
+uint8_t  TkMealFlag[TkMealFlagLen]={0x01};	//取餐标记 0x01:成功，0x02:失败
+uint8_t  PosDevNum[PosDevNumLen]={"1111111111"};	//刷卡器设备号
+uint8_t  PosTenantNum[PosTenantNumLen]={"222222"};	//刷卡器商户号
+uint8_t  PosBatchNum[PosBatchNumLen]={"3333333333"};	//刷卡器流水号
+uint8_t  PosUserNum[PosUserNumLen]={"444444444444444444444"};	//用户卡密码
 
 static uint8_t decode_signin_data(uint8_t *p);
 static uint8_t decode_mealcomp_data(uint8_t *p);
@@ -80,6 +97,56 @@ static uint8_t decode_statupload_data(uint8_t *p);
 static uint8_t decode_echo_data(uint8_t *p);
 static uint8_t decode_getmeal_data(uint8_t *p);
 
+/*******************************************************************************
+ * 函数名称:Time_Conver  转换时间数据                                                            
+ * 描    述:void                                                                   
+ *                                                                               
+ * 输    入:无                                                                     
+ * 输    出:无                                                                     
+ * 返    回:无                                                                  
+ * 修改日期:2015年5月22日                                                                    
+ *******************************************************************************/
+void Time_Conver(DATA_TIME_STRUCT *pDataTime)
+{
+	DealData[0] = 0x20;
+	DealData[1] = pDataTime->Year;
+	DealData[2] = pDataTime->Month;
+	DealData[3] = pDataTime->Date;
+	DealTime[0] = pDataTime->Hours;
+	DealTime[1] = pDataTime->Minutes;
+	DealTime[2] = pDataTime->Senconds;
+}
+
+/*******************************************************************************
+ * 函数名称:BatchNum_Conver  转换流水号                                                            
+ * 描    述:void                                                                   
+ *                                                                               
+ * 输    入:无                                                                     
+ * 输    出:无                                                                     
+ * 返    回:无                                                                  
+ * 修改日期:2015年5月22日                                                                    
+ *******************************************************************************/
+void BatchNum_Conver(DATA_TIME_STRUCT *pDataTime,uint8_t * batch_num)
+{
+	batch_num[0] = 0x20;
+	batch_num[1] = pDataTime->Year;
+	batch_num[2] = pDataTime->Month;
+	batch_num[3] = pDataTime->Date;
+	batch_num[4] = pDataTime->Hours;
+	batch_num[5] = pDataTime->Minutes;
+	batch_num[6] = pDataTime->Senconds;
+
+#if 0
+	batch_num[0] = 0;
+	batch_num[1] = 0;
+	batch_num[2] = 0;
+	batch_num[3] =  (uint8_t) ((BatchNum >> 24) & 0xFF);
+	batch_num[4] =  (uint8_t) ((BatchNum >> 16) & 0xFF);
+	batch_num[5] =  (uint8_t) ((BatchNum >> 8) & 0xFF);  
+	batch_num[6] =  (uint8_t) (BatchNum & 0xFF);	
+	++BatchNum; //流水号增加
+#endif
+}
 /**
   * @brief  获取签到结构提的数据
   * @param  NewState: new state of the Prefetch Buffer.
@@ -312,9 +379,92 @@ uint16_t get_echo_data(uint8_t *p)
   *          This parameter  can be: ENABLE or DISABLE.
   * @retval None
   */
-uint16_t get_getmeal_data(uint8_t *p)
+uint16_t get_tkmeal_data(uint8_t *p)
 {
-	return 0;
+	TakeMeal_Union *pTakeMeal_Union;
+	pTakeMeal_Union = (TakeMeal_Union *)malloc(sizeof(pTakeMeal_Union));
+	
+	pTakeMeal_Union->TakeMeal.Tid = TidChl;
+	pTakeMeal_Union->TakeMeal.Tid_Len[0] = (TidLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.Tid_Len[1] =  TidLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.Brw = BrwChl;
+	pTakeMeal_Union->TakeMeal.Brw_Len[0] = (BrwLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.Brw_Len[1] =  BrwLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.Bno = BnoChl;
+	pTakeMeal_Union->TakeMeal.Bno_Chl[0] = (BnoLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.Bno_Chl[1] =  BnoLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.DevArae = DevAraeChl;
+	pTakeMeal_Union->TakeMeal.DevArae_Len[0] = (DevAraeLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.DevArae_Len[1] =  DevAraeLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.DevSite = DevSiteChl;
+	pTakeMeal_Union->TakeMeal.DevSite_Len[0] = (DevSiteLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.DevSite_Len[1] =  DevSiteLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.Tradvol = TradvolChl;
+	pTakeMeal_Union->TakeMeal.Tradvol_Len[0] = (TradvolLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.Tradvol_Len[1] =  TradvolLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.MealId = MealIdChl;
+	pTakeMeal_Union->TakeMeal.MealId_Len[0] = (MealIdLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.MealId_Len[1] =  MealIdLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.MealQty = MealQtyChl;
+	pTakeMeal_Union->TakeMeal.MealQty_Len[0] = (MealQtyLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.MealQty_Len[1] =  MealQtyLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.MealName = MealNameChl;
+	pTakeMeal_Union->TakeMeal.MealName_Len[0] = (MealNameLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.MealName_Len[1] =  MealNameLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.MealPrice = MealPriceChl;
+	pTakeMeal_Union->TakeMeal.MealPrice_Len[0] = (MealPriceLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.MealPrice_Len[1] =  MealPriceLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.PayType = PayTypeChl;
+	pTakeMeal_Union->TakeMeal.PayType_Len[0] = (PayTypeLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.PayType_Len[1] =  PayTypeLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.Change = ChangeChl;
+	pTakeMeal_Union->TakeMeal.Change_Len[0] = (ChangeLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.Change_Len[1] =  ChangeLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.RmnMealQty = RmnMealQtyChl;
+	pTakeMeal_Union->TakeMeal.RmnMealQty_Len[0] = (RmnMealQtyLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.RmnMealQty_Len[1] =  RmnMealQtyLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.TkMealFlag = TkMealFlagChl;
+	pTakeMeal_Union->TakeMeal.TkMealFlag_Len[0] = (TkMealFlagLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.TkMealFlag_Len[1] = TkMealFlagLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.PosDevNum = PosDevNumChl;
+	pTakeMeal_Union->TakeMeal.PosDevNum_Len[0] = (PosDevNumLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.PosDevNum_Len[1] =  PosDevNumLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.PosTenantNum = PosTenantNumChl;
+	pTakeMeal_Union->TakeMeal.PosTenantNum_Len[0] = (PosTenantNumLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.PosTenantNum_Len[1] =  PosTenantNumLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.PosBatchNum = PosBatchNumChl;
+	pTakeMeal_Union->TakeMeal.PosBatchNum_Len[0] = (PosBatchNumLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.PosBatchNum_Len[1] =  PosBatchNumLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.PosUserNum = PosUserNumChl;
+	pTakeMeal_Union->TakeMeal.PosUserNum_Len[0] = (PosUserNumLen&0xFF00)>>4;
+	pTakeMeal_Union->TakeMeal.PosUserNum_Len[1] =  PosUserNumLen&0x00FF;
+	pTakeMeal_Union->TakeMeal.Mac = MacChl;
+	pTakeMeal_Union->TakeMeal.Mac_Len[0] = (MacLen&0xFF00)>>4;;
+	pTakeMeal_Union->TakeMeal.Mac_Len[1] =  MacLen&0x00FF;
+	
+	memcpy(pTakeMeal_Union->TakeMeal.Tid_Chl,Tid,sizeof(Tid));
+	memcpy(pTakeMeal_Union->TakeMeal.Brw_Chl,Brw,sizeof(Brw));
+	memcpy(pTakeMeal_Union->TakeMeal.Bno_Chl,Bno,sizeof(Bno));
+	memcpy(pTakeMeal_Union->TakeMeal.DevArae_Chl,DevArae,sizeof(DevArae));
+	memcpy(pTakeMeal_Union->TakeMeal.DevSite_Chl,DevSite,sizeof(DevSite));
+	memcpy(pTakeMeal_Union->TakeMeal.Tradvol_Chl,Tradvol,sizeof(Tradvol));
+	memcpy(pTakeMeal_Union->TakeMeal.MealId_Chl,MealId,sizeof(MealId));
+	memcpy(pTakeMeal_Union->TakeMeal.MealQty_Chl,MealQty,sizeof(MealQty));
+	memcpy(pTakeMeal_Union->TakeMeal.MealName_Chl,MealName,sizeof(MealName));
+	memcpy(pTakeMeal_Union->TakeMeal.MealPrice_Chl,MealPrice,sizeof(MealPrice));
+	memcpy(pTakeMeal_Union->TakeMeal.PayType_Chl,PayType,sizeof(PayType));
+	memcpy(pTakeMeal_Union->TakeMeal.Change_Chl,Change,sizeof(Change));
+	memcpy(pTakeMeal_Union->TakeMeal.RmnMealQty_Chl,RmnMealQty,sizeof(RmnMealQty));
+	memcpy(pTakeMeal_Union->TakeMeal.TkMealFlag_Chl,TkMealFlag,sizeof(TkMealFlag));
+	memcpy(pTakeMeal_Union->TakeMeal.PosDevNum_Chl,PosDevNum,sizeof(PosDevNum));
+	memcpy(pTakeMeal_Union->TakeMeal.PosTenantNum_Chl,PosTenantNum,sizeof(PosTenantNum));
+	memcpy(pTakeMeal_Union->TakeMeal.PosBatchNum_Chl,PosBatchNum,sizeof(PosBatchNum));
+	memcpy(pTakeMeal_Union->TakeMeal.PosUserNum_Chl,PosUserNum,sizeof(PosUserNum));
+	memcpy(pTakeMeal_Union->TakeMeal.Mac_Chl,Mac,sizeof(Mac));
+	
+	memcpy(p,pTakeMeal_Union,sizeof(pTakeMeal_Union->TakeMealBuf));
+	free(pTakeMeal_Union);
+	return  sizeof(pTakeMeal_Union->TakeMealBuf);		
 }
   
 /**
@@ -329,12 +479,17 @@ void package_buff(uint16_t Request,uint8_t *request_buf)
 {
 	uint16_t crc_value;
 	uint16_t contex_lenth=0;
+	DATA_TIME_STRUCT DataTime;
+	RTC_TimeShow(&DataTime);    //获取时间
+	Time_Conver(&DataTime);		//转换时间数据到数组
+	BatchNum_Conver(&DataTime,Brw);  //获取流水号
 	pcket_struct.Stx = StxChl;  //获取帧头
 	pcket_struct.Etx = EtxChl;  //获取帧尾
 	pcket_struct.CmdReq[0]= ((Request&0xff00)>>8);  //获取请求
 	pcket_struct.CmdReq[1]=  (Request&0x00ff);        
 	memcpy(request_buf,&pcket_struct.Stx,sizeof(pcket_struct.Stx)); //复制单个使用地址 ：帧头
 	memcpy(request_buf+1,pcket_struct.CmdReq,sizeof(pcket_struct.CmdReq)); //复制签到请求命令 
+	//获取时间
 	switch(Request)
 	{
 		case SignInReq:{
@@ -342,7 +497,7 @@ void package_buff(uint16_t Request,uint8_t *request_buf)
 			//将签到用到的结构体中的数据写入sign_in_buf中，偏移5个位置，返回签到结构体的字节数 
 		}break;
 		case MealComparReq:{
-			SPI_Flash_Read(Meal_Union.MealBuf,MENU_RECORD_STAR,sizeof(Meal_Union));
+			//SPI_Flash_Read(Meal_Union.MealBuf,MENU_RECORD_STAR,sizeof(Meal_Union));
 			contex_lenth = get_mealcompar_data(request_buf+5); 
 			//将签到用到的结构体中的数据写入sign_in_buf中，偏移5个位置，返回签到结构体的字节数 
 		}break;
@@ -351,7 +506,7 @@ void package_buff(uint16_t Request,uint8_t *request_buf)
 			//将签到用到的结构体中的数据写入sign_in_buf中，偏移5个位置，返回签到结构体的字节数     
 		}break;
 		case TkMealReq:{
-			contex_lenth = get_getmeal_data(request_buf+5); 
+			contex_lenth = get_tkmeal_data(request_buf+5); 
 			//将签到用到的结构体中的数据写入sign_in_buf中，偏移5个位置，返回签到结构体的字节数        
 		}break;
 		case EchoReq:{
@@ -425,7 +580,7 @@ uint8_t decode_host_data(uint8_t *ptr)
   */
 SIGN_IN_REQ_STRUCT sigin_req;
 //extern Meal_Union meal_union;
-static uint8_t MealBuf[sizeof(Meal_Union.MealBuf)];
+//static uint8_t MealBuf[sizeof(Meal_Union.MealBuf)];
 static uint8_t decode_signin_data(uint8_t *p)
 {
 	uint32_t byte_count=0;
@@ -448,6 +603,7 @@ static uint8_t decode_signin_data(uint8_t *p)
 		{
 			sigin_req.Bno_Chl[i] = p[byte_count++];
 		}
+		memcpy(Bno,sigin_req.Bno_Chl,BnoLen); //更新内部的批次号
 	}
 	if(p[byte_count++]==AppVerChl)
 	{
@@ -510,7 +666,7 @@ static uint8_t decode_signin_data(uint8_t *p)
 			Meal_Union.MealBuf[i] = p[byte_count++];
 		}
 		//将餐品的数据写入flash 
-		SPI_Flash_Write(Meal_Union.MealBuf,MENU_RECORD_STAR,sizeof(Meal_Union));
+		//SPI_Flash_Write(Meal_Union.MealBuf,MENU_RECORD_STAR,sizeof(Meal_Union));
 		//SPI_Flash_Read(MealBuf,MENU_RECORD_STAR,sizeof(Meal_Union));
 	}
 	if(p[byte_count++]==AckChl)
@@ -591,8 +747,30 @@ static uint8_t decode_statupload_data(uint8_t *p)
 	}
 	return 0;
 }
+TAKE_MEAL_REQ_STRUCT takemeal_req;
 static uint8_t decode_getmeal_data(uint8_t *p)
 {
+	uint32_t byte_count=0;
+	if (p[byte_count++]==AckChl)
+	{
+		takemeal_req.Ack =AckChl;
+		takemeal_req.Ack_Len = (p[byte_count++]<<4);
+		takemeal_req.Ack_Len += (p[byte_count++]); 
+		for(uint8_t i=0;i<takemeal_req.Ack_Len;i++)
+		{
+			takemeal_req.Ack_Chl[i] = p[byte_count++];
+		}
+	}
+	if (p[byte_count++]==MacChl)
+	{
+		takemeal_req.Mac =MacChl;
+		takemeal_req.Mac_Len = (p[byte_count++]<<4);
+		takemeal_req.Mac_Len += (p[byte_count++]); 
+		for(uint8_t i=0;i<takemeal_req.Mac_Len;i++)
+		{
+			takemeal_req.Mac_Chl[i] = p[byte_count++];
+		}
+	}	
 	return 0;
 }
 
@@ -645,13 +823,11 @@ static void tcpclient_thread(void *arg)
 {
 	struct netconn *tcp_clientconn;
 	struct ip_addr ServerIPaddr;
-	uint32_t data_len = 0;
 
 	struct   netbuf *inbuf;
 	uint8_t* buf;
-	uint16_t buflen;
+	uint16_t buflen;	
 	
-
 	portBASE_TYPE xStatus;
 	const portTickType xTicksToWait =  10 / portTICK_RATE_MS;
 	static err_t err,recv_err;
@@ -662,6 +838,7 @@ static void tcpclient_thread(void *arg)
 	IP4_ADDR( &ServerIPaddr, SERVER_IP_ADDR0, SERVER_IP_ADDR1, SERVER_IP_ADDR2, SERVER_IP_ADDR3 );
 
 	xQueue = xQueueCreate( 10, sizeof( long ) );
+
   #if 1
 	while(1)
 	{
@@ -674,14 +851,13 @@ static void tcpclient_thread(void *arg)
 			if (err != ERR_OK)  netconn_delete(tcp_clientconn); 
 			else if (err == ERR_OK)
 			{
-				struct netbuf *recvbuf;
 				/*timeout to wait for new data to be received <Avoid death etc.> */
 				netconn_set_sendtimeout(tcp_clientconn,10);
 				netconn_set_recvtimeout(tcp_clientconn,800);
 
 				while(1)
 				{
-					//if((tcp_client_flag & LWIP_SEND_DATA) == LWIP_SEND_DATA)  
+					//if((tcp_client_flag & SignInFlag) == SignInFlag)  
 					xStatus = xQueueReceive( xQueue,
 											 &lReceivedValue,
 											 xTicksToWait );
@@ -720,6 +896,22 @@ static void tcpclient_thread(void *arg)
 									printf("StatuUploadReq erro code is %d\r\n",err);                               
 							};break;
 							case TkMealReq:{
+								auto uint8_t tk_meal_buf[Tk_Meal_Lenth+ 8]={0};  //使用auto，该类具有自动存储期
+								package_buff(TkMealReq,tk_meal_buf);   //将要发送的数据填入sendbuf    
+								err=netconn_write(tcp_clientconn,\
+								tk_meal_buf,sizeof(tk_meal_buf),\
+								NETCONN_COPY); 
+								if(err != ERR_OK)  
+									printf("StatuUploadReq erro code is %d\r\n",err);      				
+							};break;
+							case EchoReq:{
+								auto uint8_t echo_buf[Totoal_Echo_Lenth+ 8]={0};  //使用auto，该类具有自动存储期
+								package_buff(EchoReq,echo_buf);   //将要发送的数据填入sendbuf    
+								err=netconn_write(tcp_clientconn,\
+								echo_buf,sizeof(echo_buf),\
+								NETCONN_COPY); 
+								if(err != ERR_OK)  
+									printf("StatuUploadReq erro code is %d\r\n",err);      	
 							};break;
 							default:break;
 						}
@@ -749,7 +941,6 @@ static void tcpclient_thread(void *arg)
 						netconn_close(tcp_clientconn);
 						netbuf_delete(inbuf);
 						netconn_delete(tcp_clientconn);
-						xStatus = xQueueSend(xQueue,&lReceivedValue,10);
 						break;
 					}
 				}
@@ -761,7 +952,7 @@ static void tcpclient_thread(void *arg)
 
 /*-----------------------------------------------------------------------------------*/
 
-void tcpclient_init(void)
+void Tcpclient_Init(void)
 {
   sys_thread_new("tcpserv", tcpclient_thread, NULL, DEFAULT_THREAD_STACKSIZE * 2, TCPCLIENT_THREAD_PRIO);
 }

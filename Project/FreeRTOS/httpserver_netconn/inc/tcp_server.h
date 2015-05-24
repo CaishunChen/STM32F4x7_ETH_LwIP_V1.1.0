@@ -8,7 +8,7 @@ typedef struct _COMMUNICATE_PACKET_STRUCT
 	uint8_t Tid_Len[2];      
 	uint8_t Brw;             /*批次号*/
 	uint8_t Brw_Len[2];
-	uint8_t Bno;						 /*交易流水线*/
+	uint8_t Bno;             /*交易流水线*/
 	uint8_t Bno_Len[2];
 	uint8_t DevArae;         /*终端所在区域编号*/
 	uint8_t DevArae_Len[2];
@@ -21,9 +21,9 @@ typedef struct _COMMUNICATE_PACKET_STRUCT
 	uint8_t DealTime;        /*交易时间*/
 	uint8_t DealTime_Len[2];
 	uint8_t Mac;             /*物理地址*/
-	uint8_t Mac_Len[2];	
+	uint8_t Mac_Len[2];
 	uint8_t MealId;          /*餐品ID*/
-	uint8_t MealId_Len[2];	 
+	uint8_t MealId_Len[2];
 	uint8_t MealQty;         /*餐品购买数量*/
 	uint8_t MealQty_Len[2];
 	uint8_t MealName;        /*餐品名字*/
@@ -123,7 +123,7 @@ extern PACKET_STRUCT pcket_struct;
 #define MacLen              8
 
 #define Totoal_SignIn_Lenth TidLen+NomiNumLen+BnoLen+BrwLen+DealDataLen+DealTimeLen+DevAraeLen\
-                            +DevSiteLen+AppVerLen+ParaFileVerLen+BusiDatFileVerLen+CkStaLen+12*3
+							+DevSiteLen+AppVerLen+ParaFileVerLen+BusiDatFileVerLen+CkStaLen+12*3
 
 __attribute__ ((aligned (1))) /*异常，大小端与堆栈，不用uint16_t*/
 typedef struct _SIGN_IN_STRUCT
@@ -132,8 +132,8 @@ typedef struct _SIGN_IN_STRUCT
 	uint8_t  Tid_Len[2]; 
 	uint8_t  Tid_Chl[TidLen]; 
 	uint8_t  NomiNum;         /*商户号*/
-	uint8_t  NomiNum_Len[2];	
-	uint8_t  NomiNum_Chl[NomiNumLen];	
+	uint8_t  NomiNum_Len[2];
+	uint8_t  NomiNum_Chl[NomiNumLen];
 	uint8_t  Brw;             /*交易流水线*/
 	uint8_t  Brw_Len[2];
 	uint8_t  Brw_Chl[BrwLen];	
@@ -236,49 +236,49 @@ typedef struct _SIGN_IN_REQ_STRUCT
 #define	MealComparLen    36*4
 #define MealComparReqLen 37*4	
 #define Totoal_MealCompar_Lenth   TidLen+BnoLen+BrwLen+DevAraeLen\
-                                  +DevSiteLen+MealComparLen+MacLen+7*3
+								  +DevSiteLen+MealComparLen+MacLen+7*3
 typedef struct _MEAL_COMPAR_STRUCT
 {
-    uint8_t Tid;             /*终端TID码*/
-    uint8_t Tid_Len[2]; 
-    uint8_t Tid_Chl[TidLen]; 
-    uint8_t Brw;             /*交易流水线*/ 
-    uint8_t Brw_Len[2];
-    uint8_t Brw_Chl[BrwLen];    
-    uint8_t Bno;             /*批次号*/
-    uint8_t Bno_Len[2];
-    uint8_t Bno_Chl[BnoLen];
-    uint8_t DevArae;         /*终端所在区域编号*/ 
-    uint8_t DevArae_Len[2];
-    uint8_t DevArae_Chl[DevAraeLen];
-    uint8_t DevSite;         /*终端所在区域地点编号*/
-    uint8_t DevSite_Len[2];
-    uint8_t DevSite_Chl[DevSiteLen];
-    uint8_t MealCompar;      /*餐品对比*/  
-    uint8_t MealCompar_Len[2];
-    uint8_t MealCompar_Chl[MealComparLen];
-    uint8_t Mac;             /*MAC key*/
-    uint8_t Mac_Len[2];
-    uint8_t Mac_Chl[MacLen];
+	uint8_t Tid;             /*终端TID码*/
+	uint8_t Tid_Len[2]; 
+	uint8_t Tid_Chl[TidLen]; 
+	uint8_t Brw;             /*交易流水线*/ 
+	uint8_t Brw_Len[2];
+	uint8_t Brw_Chl[BrwLen];    
+	uint8_t Bno;             /*批次号*/
+	uint8_t Bno_Len[2];
+	uint8_t Bno_Chl[BnoLen];
+	uint8_t DevArae;         /*终端所在区域编号*/ 
+	uint8_t DevArae_Len[2];
+	uint8_t DevArae_Chl[DevAraeLen];
+	uint8_t DevSite;         /*终端所在区域地点编号*/
+	uint8_t DevSite_Len[2];
+	uint8_t DevSite_Chl[DevSiteLen];
+	uint8_t MealCompar;      /*餐品对比*/  
+	uint8_t MealCompar_Len[2];
+	uint8_t MealCompar_Chl[MealComparLen];
+	uint8_t Mac;             /*MAC key*/
+	uint8_t Mac_Len[2];
+	uint8_t Mac_Chl[MacLen];
 }MEAL_COMPAR_STRUCT;
 
 typedef union _MealCompar_Union
 {
-    MEAL_COMPAR_STRUCT MealCompar;
-    uint8_t MealComparBuf[Totoal_MealCompar_Lenth];
+	MEAL_COMPAR_STRUCT MealCompar;
+	uint8_t MealComparBuf[Totoal_MealCompar_Lenth];
 }MealCompar_Union;
 
 typedef struct _MEAL_COMPAR_REQ_STRUCT
 {
-    uint8_t  Ack;             /*应答码*/
-    uint16_t Ack_Len;
-    uint8_t  Ack_Chl[AckLen];    
+	uint8_t  Ack;             /*应答码*/
+	uint16_t Ack_Len;
+	uint8_t  Ack_Chl[AckLen];    
 	uint8_t  MealCompar;      /*餐品对比*/
-    uint16_t MealCompar_Len;
-    uint8_t  MealCompar_Chl[MealComparReqLen];   
-    uint8_t  Mac;             /*密钥*/
-    uint16_t Mac_Len;
-    uint8_t  Mac_Chl[MacLen];
+	uint16_t MealCompar_Len;
+	uint8_t  MealCompar_Chl[MealComparReqLen];   
+	uint8_t  Mac;             /*密钥*/
+	uint16_t Mac_Len;
+	uint8_t  Mac_Chl[MacLen];
 }MEAL_COMPAR_REQ_STRUCT;
 
 /*******************************************
@@ -325,9 +325,9 @@ typedef union _MealDetailReq_Union
 #define TradvolChl          0xB0
 #define TradvolLen          6
 #define MealIdChl           0xB1
-#define MealIdLen           6
+#define MealIdLen           4
 #define MealQtyChl          0xB2
-#define MealQtyLen          6
+#define MealQtyLen          1
 #define MealNameChl         0xB3
 #define MealNameLen         20
 #define MealPriceChl        0xBD
@@ -348,6 +348,12 @@ typedef union _MealDetailReq_Union
 #define PosBatchNumLen      10
 #define PosUserNumChl       0xE3
 #define PosUserNumLen       21
+
+#define Tk_Meal_Lenth TidLen+BrwLen+BnoLen+DevAraeLen+DevSiteLen+TradvolLen+MealIdLen+MealNameLen+MealQtyLen+\
+					  MealPriceLen+PayTypeLen+ChangeLen+RmnMealQtyLen+TkMealFlagLen+PosDevNumLen+PosTenantNumLen+\
+					  PosTenantNumLen+PosBatchNumLen+MacLen+19*3
+					  
+					  
 
 typedef struct _TAKE_MEAL_STRUCT
 {
@@ -418,9 +424,9 @@ typedef union _TakeMeal_Union
 
 typedef struct _TAKE_MEAL_REQ_STRUCT
 {
-    uint8_t  Ack;            /*应答码*/
-    uint16_t Ack_Len;
-    uint8_t  Ack_Chl[AckLen]; 
+	uint8_t  Ack;            /*应答码*/
+	uint16_t Ack_Len;
+	uint8_t  Ack_Chl[AckLen]; 
 	uint8_t  Mac;             /*MAC key*/
 	uint16_t Mac_Len;
 	uint8_t  Mac_Chl[MacLen];	
@@ -463,9 +469,9 @@ typedef union _StatuUpload_Union
 
 typedef struct _STATU_UPLOAD_REQ_STRUCT
 {
-    uint8_t  Ack;            /*应答码*/
-    uint16_t Ack_Len;
-    uint8_t  Ack_Chl[AckLen];    
+	uint8_t  Ack;            /*应答码*/
+	uint16_t Ack_Len;
+	uint8_t  Ack_Chl[AckLen];    
 }STATU_UPLOAD_REQ_STRUCT;
 
 /*-------------------------------StateUploadReq----------------end*/
@@ -479,13 +485,13 @@ typedef struct _ECHO_STRUCT
 	uint8_t  Tid;             /*终端TID码*/
 	uint8_t  Tid_Len[2]; 
 	uint8_t  Tid_Chl[TidLen];
-    uint8_t  DealData;        /*交易日期*/
-    uint8_t  DealData_Len[2];
-    uint8_t  DealData_Chl[DealDataLen];
-    uint8_t  DealTime;        /*交易时间*/
-    uint8_t  DealTime_Len[2];
-    uint8_t  DealTime_Chl[DealTimeLen];
-    uint8_t  UpDatFlag;        /*更新标识*/
+	uint8_t  DealData;        /*交易日期*/
+	uint8_t  DealData_Len[2];
+	uint8_t  DealData_Chl[DealDataLen];
+	uint8_t  DealTime;        /*交易时间*/
+	uint8_t  DealTime_Len[2];
+	uint8_t  DealTime_Chl[DealTimeLen];
+	uint8_t  UpDatFlag;        /*更新标识*/
 	uint8_t  UpDatFlag_Len[2]; 
 	uint8_t  UpDatFlag_Chl[UpDatFlagLen];  
 }ECHO_STRUCT;
@@ -498,15 +504,15 @@ typedef union _Echo_Union
 
 typedef struct _ECHO_REQ_STRUCT
 {
-    uint8_t  DealData;        /*交易日期*/
-    uint16_t DealData_Len;
-    uint8_t  DealData_Chl[DealDataLen];
-    uint8_t  DealTime;        /*交易时间*/
-    uint16_t DealTime_Len;
-    uint8_t  DealTime_Chl[DealTimeLen];
-    uint8_t  Ack;            /*应答码*/
-    uint16_t Ack_Len;
-    uint8_t  Ack_Chl[AckLen];    	
+	uint8_t  DealData;        /*交易日期*/
+	uint16_t DealData_Len;
+	uint8_t  DealData_Chl[DealDataLen];
+	uint8_t  DealTime;        /*交易时间*/
+	uint16_t DealTime_Len;
+	uint8_t  DealTime_Chl[DealTimeLen];
+	uint8_t  Ack;            /*应答码*/
+	uint16_t Ack_Len;
+	uint8_t  Ack_Chl[AckLen];    	
 }ECHO_REQ_STRUCT;
 
 
@@ -531,7 +537,11 @@ typedef struct _ECHO_REQ_STRUCT
 #define LOCAIL_PORT     9014
 
 /*Define bit have some data to send*/
-#define LWIP_SEND_DATA			0X80    
+#define SignInFlag			0X80 
+#define MealCompFalg        0x40
+#define StatuUploadFlag     0x20
+#define TakeMealFlag        0x10
+#define EchoFlag            0x80
 
 /*Define the tcp_client_recvbuf size*/
 #define TCP_CLIENT_RX_BUFSIZE	  512
@@ -539,7 +549,7 @@ typedef struct _ECHO_REQ_STRUCT
 extern uint8_t tcp_client_flag;
 extern struct netif xnetif;
 
-void tcpclient_init(void);
+void Tcpclient_Init(void);
 
 void package_buff(uint16_t Request,uint8_t *request_buf);
 uint8_t decode_host_data(uint8_t *ptr);

@@ -1,13 +1,14 @@
 .\stm324xg_eval\main.o: ..\src\main.c
 .\stm324xg_eval\main.o: C:\Keil\ARM\ARMCC\bin\..\include\string.h
-.\stm324xg_eval\main.o: ..\..\..\..\Libraries\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth.h
-.\stm324xg_eval\main.o: ..\inc\stm32f4x7_eth_conf.h
-.\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+.\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Include\arm_math.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Include\core_cm4.h
 .\stm324xg_eval\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Include\core_cmInstr.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Include\core_cmFunc.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Include\core_cm4_simd.h
+.\stm324xg_eval\main.o: C:\Keil\ARM\ARMCC\bin\..\include\math.h
+.\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+.\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Include\core_cm4.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h
 .\stm324xg_eval\main.o: ..\inc\stm32f4xx_conf.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h
@@ -37,6 +38,8 @@
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_usart.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h
 .\stm324xg_eval\main.o: ..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
+.\stm324xg_eval\main.o: ..\..\..\..\Libraries\STM32F4x7_ETH_Driver\inc\stm32f4x7_eth.h
+.\stm324xg_eval\main.o: ..\inc\stm32f4x7_eth_conf.h
 .\stm324xg_eval\main.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\delay.h
 .\stm324xg_eval\main.o: ..\inc\main.h
 .\stm324xg_eval\main.o: ..\inc\stm32f4x7_eth_bsp.h
@@ -100,3 +103,5 @@
 .\stm324xg_eval\main.o: ..\TASK\inc\server_task.h
 .\stm324xg_eval\main.o: ..\TASK\inc\start_task.h
 .\stm324xg_eval\main.o: ..\TASK\inc\tkmeal_task.h
+.\stm324xg_eval\main.o: ..\TASK\inc\wanwuyun_task.h
+.\stm324xg_eval\main.o: ..\..\..\..\Utilities\STM32_EVAL\STM324x7I_APP\include\rtc.h
