@@ -38,8 +38,8 @@
 #define SYS_LIGHTWEIGHT_PROT    1
 
 #define ETHARP_TRUST_IP_MAC     1
-#define IP_REASSEMBLY           0
-#define IP_FRAG                 0
+#define IP_REASSEMBLY           1  //组包
+#define IP_FRAG                 1  //分包
 #define ARP_QUEUEING            0
 
 /**
@@ -128,7 +128,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* ---------- Statistics options ---------- */
 #define LWIP_STATS 0
-#define LWIP_PROVIDE_ERRNO 1
+#define LWIP_PROVIDE_ERRNO 0
 
 /* ---------- link callback options ---------- */
 /* LWIP_NETIF_LINK_CALLBACK==1: Support a callback function from an interface
@@ -209,7 +209,7 @@ The STM32F4x7 allows computing and verifying the IP, UDP, TCP and ICMP checksums
    -----------------------------------
 */
 
-#define LWIP_DEBUG                      1
+#define LWIP_DEBUG                      0
 
 //*****************************************************************************
 //

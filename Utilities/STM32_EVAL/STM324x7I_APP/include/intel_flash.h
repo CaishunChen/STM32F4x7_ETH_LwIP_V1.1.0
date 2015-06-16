@@ -1,23 +1,38 @@
-#ifndef   __DATAFLASH_H__
-#define   __DATAFLASH_H__
+/**
+  ******************************************************************************
+  * @file    flash_if.h 
+  * @author  MCD Application Team
+  * @version V1.0.0
+  * @date    31-October-2011
+  * @brief   Header for flash_if.c module
+  ******************************************************************************
+  * @attention
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+  ******************************************************************************
+  */
 
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __FLASH_IF_H
+#define __FLASH_IF_H
 
-#include "stm32f4xx.h"
-#include "stm32f4xx_flash.h"
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
 
+//FLASH起始地址
+#define STM32_FLASH_BASE 0x08000000 	//STM32 FLASH的起始地址
 
+#define USER_FLASH_FIRST_PAGE_ADDRESS ADDR_FLASH_SECTOR_6 /* Only as example see comment */
+#define USER_FLASH_LAST_PAGE_ADDRESS  ADDR_FLASH_SECTOR_8
+#define USER_FLASH_END_ADDRESS        0x080FFFFF  
 
-
-#if defined (STM32F10X_HD) || defined (STM32F10X_HD_VL) || defined (STM32F10X_CL) || defined (STM32F10X_XL)
-  #define FLASH_PAGE_SIZE    ((uint16_t)0x800)
-  
-#else
-  #define FLASH_PAGE_SIZE    ((uint16_t)0x400)
-#endif
-
-
-#define FLASH_USER_START_ADDR   ADDR_FLASH_SECTOR_10   /* Start @ of user Flash area */
-#define FLASH_USER_END_ADDR     ADDR_FLASH_SECTOR_11   /* End @ of user Flash area */
 
 /* Base address of the Flash sectors */
 #define ADDR_FLASH_SECTOR_0     ((uint32_t)0x08000000) /* Base @ of Sector 0, 16 Kbytes */
@@ -33,16 +48,20 @@
 #define ADDR_FLASH_SECTOR_10    ((uint32_t)0x080C0000) /* Base @ of Sector 10, 128 Kbytes */
 #define ADDR_FLASH_SECTOR_11    ((uint32_t)0x080E0000) /* Base @ of Sector 11, 128 Kbytes */
 
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+#define USER_FLASH_SIZE   (USER_FLASH_END_ADDRESS - USER_FLASH_FIRST_PAGE_ADDRESS)
 
-int Flash_Read(uint32_t iAddress, uint8_t *buf, int32_t iNbrToRead) ;
-int Flash_Write(uint32_t iAddress, uint8_t *buf, uint32_t iNbrToWrite); 
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions ------------------------------------------------------- */
+uint32_t FLASH_If_Write(__IO uint32_t* Address, uint32_t* Data, uint16_t DataLength);
+int8_t FLASH_If_Erase(uint32_t StartSector);
+void FLASH_If_Init(void);
 
-//void  WriteMeal(void);
-//void  ReadMeal(void);
-// 
-//void  ReadCoins(void);
-//void  WriteCoins(void);
+uint32_t STMFLASH_ReadWord(uint32_t faddr);		  	//读出字  
+void STMFLASH_Write(uint32_t WriteAddr,uint8_t *pBuffer,uint32_t NumToWrite);		//从指定地址开始写入指定长度的数据
+void STMFLASH_Read(uint32_t ReadAddr,uint32_t *pBuffer,uint32_t NumToRead);   		//从指定地址开始读出指定长度的数据
 
+#endif /* __FLASH_IF_H */
 
-#endif
-
+/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

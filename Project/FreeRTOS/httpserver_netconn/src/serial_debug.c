@@ -45,6 +45,7 @@
 #ifdef SERIAL_DEBUG
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+#if 0
 #ifdef __GNUC__
   /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
      set to 'Yes') calls __io_putchar() */
@@ -52,7 +53,7 @@
 #else
   #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
-
+#endif
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -94,18 +95,25 @@ void DebugComPort_Init(void)
   * @param  None
   * @retval None
   */
-PUTCHAR_PROTOTYPE
+#if 1
+#define CR 0x0D
+#define LF 0x0A
+uint8_t Debug_Putchar(uint8_t ch)
 {
   /* Place your implementation of fputc here */
+  if(ch == '\n')
+  {
+	while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TC) == RESET);
+	USART_SendData(EVAL_COM1, (uint8_t) CR);
+  }
+  /* Loop until the end of transmission */
+  while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TC) == RESET);
+  
   /* e.g. write a character to the USART */
   USART_SendData(EVAL_COM1, (uint8_t) ch);
-
-  /* Loop until the end of transmission */
-  while (USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TC) == RESET)
-  {}
-
   return ch;
 }
+#endif
 #endif /* SERIAL_DEBUG */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

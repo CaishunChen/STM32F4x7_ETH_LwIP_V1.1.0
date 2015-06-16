@@ -157,7 +157,7 @@ uint16_t get_signin_data(uint8_t *p)
 {
 	//union _SignIn_Union SignIn_Union;
 	SignIn_Union   *pSignIn_Union;
-	pSignIn_Union = (SignIn_Union *)malloc(sizeof(SignIn_Union));
+	pSignIn_Union = (SignIn_Union *)pvPortMalloc(sizeof(SignIn_Union));
 	/*--GetSignInPacketBuff--TAG value and length*/
 	pSignIn_Union->SignIn.Tid = TidChl;
 	pSignIn_Union->SignIn.Tid_Len[0] = (TidLen&0xFF00)>>4;
@@ -171,12 +171,6 @@ uint16_t get_signin_data(uint8_t *p)
 	pSignIn_Union->SignIn.Bno = BnoChl;
 	pSignIn_Union->SignIn.Bno_Len[0] = (BnoLen&0xFF00)>>4;
 	pSignIn_Union->SignIn.Bno_Len[1] = BnoLen&0x00FF;
-	pSignIn_Union->SignIn.DealData = DealDataChl;
-	pSignIn_Union->SignIn.DealData_Len[0] = (DealDataLen&0xFF00)>>4;
-	pSignIn_Union->SignIn.DealData_Len[1] = DealDataLen&0x00FF;
-	pSignIn_Union->SignIn.DealTime = DealTimeChl;
-	pSignIn_Union->SignIn.DealTime_Len[0] = (DealTimeLen&0xFF00)>>4;
-	pSignIn_Union->SignIn.DealTime_Len[1] = DealTimeLen&0x00FF;
 	pSignIn_Union->SignIn.DevArae = DevAraeChl;
 	pSignIn_Union->SignIn.DevArae_Len[0] = (DevAraeLen&0xFF00)>>4;
 	pSignIn_Union->SignIn.DevArae_Len[1] = DevAraeLen&0x00FF;
@@ -200,8 +194,6 @@ uint16_t get_signin_data(uint8_t *p)
 	memcpy(pSignIn_Union->SignIn.NomiNum_Chl,NomiNum,sizeof(NomiNum));
 	memcpy(pSignIn_Union->SignIn.Bno_Chl,Bno,sizeof(Bno));
 	memcpy(pSignIn_Union->SignIn.Brw_Chl,Brw,sizeof(Brw));
-	memcpy(pSignIn_Union->SignIn.DealData_Chl,DealData,sizeof(DealData));
-	memcpy(pSignIn_Union->SignIn.DealTime_Chl,DealTime,sizeof(DealTime));
 	memcpy(pSignIn_Union->SignIn.DevArae_Chl,DevArae,sizeof(DevArae));
 	memcpy(pSignIn_Union->SignIn.DevSite_Chl,DevSite,sizeof(DevSite));
 	memcpy(pSignIn_Union->SignIn.AppVer_Chl,AppVer,sizeof(AppVer));
@@ -211,7 +203,7 @@ uint16_t get_signin_data(uint8_t *p)
 	
 	memcpy(p,pSignIn_Union,sizeof(SignIn_Union));
 	
-	free(pSignIn_Union);
+	vPortFree(pSignIn_Union);
 	return  sizeof(SignIn_Union);
 }
 
@@ -226,7 +218,7 @@ uint16_t get_mealcompar_data(uint8_t *p)
 {
 	MealCompar_Union *pMealCompar_Union;
 	//MealCompar_Union  sMealCompar_Union;
-	pMealCompar_Union = (MealCompar_Union *)malloc(sizeof(MealCompar_Union));
+	pMealCompar_Union = (MealCompar_Union *)pvPortMalloc(sizeof(MealCompar_Union));
 	/*--GetSignInPacketBuff--TAG value and length*/
 	pMealCompar_Union->MealCompar.Tid = TidChl;
 	//sMealCompar_Union. MealCompar.Tid = TidChl;
@@ -297,7 +289,7 @@ uint16_t get_mealcompar_data(uint8_t *p)
 	//memcpy(sMealCompar_Union. MealCompar.Mac_Chl,Mac,sizeof(Mac));
 	memcpy(p,pMealCompar_Union->MealComparBuf,sizeof(pMealCompar_Union->MealComparBuf));
 	//memcpy(p,sMealCompar_Union.MealComparBuf,sizeof(sMealCompar_Union.MealComparBuf));
-	free(pMealCompar_Union);
+	vPortFree(pMealCompar_Union);
 	return  sizeof(pMealCompar_Union->MealComparBuf);  
 }
   
@@ -310,7 +302,7 @@ uint16_t get_mealcompar_data(uint8_t *p)
 uint16_t get_statupload_data(uint8_t *p)
 {
 	StatuUpload_Union *pStatuUpload_Union;
-	pStatuUpload_Union = (StatuUpload_Union *)malloc(sizeof(pStatuUpload_Union));
+	pStatuUpload_Union = (StatuUpload_Union *)pvPortMalloc(sizeof(pStatuUpload_Union));
 	/*--GetStatuUploadPacketBuff--TAG value and length*/
 	pStatuUpload_Union->StatuUpload.Tid = TidChl;
 	pStatuUpload_Union->StatuUpload.Tid_Len[0] = (TidLen&0xFF00)>>4;
@@ -335,7 +327,7 @@ uint16_t get_statupload_data(uint8_t *p)
 	memcpy(pStatuUpload_Union->StatuUpload.DevStatu_Chl,Tid,sizeof(DevStatu));
 
 	memcpy(p,pStatuUpload_Union,sizeof(pStatuUpload_Union->StatuUploafBuf));
-	free(pStatuUpload_Union);
+	vPortFree(pStatuUpload_Union);
 	return  sizeof(pStatuUpload_Union->StatuUploafBuf);
 }
 
@@ -348,7 +340,7 @@ uint16_t get_statupload_data(uint8_t *p)
 uint16_t get_echo_data(uint8_t *p)
 {
 	Echo_Union *pEcho_Union;
-	pEcho_Union = (Echo_Union *)malloc(sizeof(pEcho_Union));
+	pEcho_Union = (Echo_Union *)pvPortMalloc(sizeof(pEcho_Union));
 	
 	pEcho_Union->Echo.Tid = TidChl;
 	pEcho_Union->Echo.Tid_Len[0] = (TidLen&0xFF00)>>4;
@@ -369,7 +361,7 @@ uint16_t get_echo_data(uint8_t *p)
 	memcpy(pEcho_Union->Echo.UpDatFlag_Chl,UpDatFlag,sizeof(UpDatFlag));
 	
 	memcpy(p,pEcho_Union,sizeof(pEcho_Union->EchoBuf));
-	free(pEcho_Union);
+	vPortFree(pEcho_Union);
 	return  sizeof(pEcho_Union->EchoBuf);	
 }
 
@@ -382,7 +374,7 @@ uint16_t get_echo_data(uint8_t *p)
 uint16_t get_tkmeal_data(uint8_t *p)
 {
 	TakeMeal_Union *pTakeMeal_Union;
-	pTakeMeal_Union = (TakeMeal_Union *)malloc(sizeof(pTakeMeal_Union));
+	pTakeMeal_Union = (TakeMeal_Union *)pvPortMalloc(sizeof(pTakeMeal_Union));
 	
 	pTakeMeal_Union->TakeMeal.Tid = TidChl;
 	pTakeMeal_Union->TakeMeal.Tid_Len[0] = (TidLen&0xFF00)>>4;
@@ -463,7 +455,7 @@ uint16_t get_tkmeal_data(uint8_t *p)
 	memcpy(pTakeMeal_Union->TakeMeal.Mac_Chl,Mac,sizeof(Mac));
 	
 	memcpy(p,pTakeMeal_Union,sizeof(pTakeMeal_Union->TakeMealBuf));
-	free(pTakeMeal_Union);
+	vPortFree(pTakeMeal_Union);
 	return  sizeof(pTakeMeal_Union->TakeMealBuf);		
 }
   
@@ -918,30 +910,34 @@ static void tcpclient_thread(void *arg)
 						send_success_flag = 0x01; 
 						//接受一个Queue后，进行计时，2S后无数据判断失败
 					}
-					recv_err = netconn_recv(tcp_clientconn, &inbuf);
-					if (recv_err == ERR_OK)
+					//进入接听状态
+					if(ERR_OK ==  netconn_listen_with_backlog(tcp_clientconn,2))
 					{
-						if (netconn_err(tcp_clientconn ) == ERR_OK)
-						{ 
-							netbuf_data(inbuf, (void**)&buf, &buflen);
-							decode_host_data(buf);
-							netbuf_delete(inbuf);
-							send_success_flag = 0x00; 
-							lReceivedValue = 0 ; 
-						}
-						else
+						recv_err = netconn_recv(tcp_clientconn, &inbuf);
+						if (recv_err == ERR_OK)
 						{
-							printf("recv_err != ERR_OK \r\n");
+							if (netconn_err(tcp_clientconn ) == ERR_OK)
+							{ 
+								netbuf_data(inbuf, (void**)&buf, &buflen);
+								decode_host_data(buf);
+								netbuf_delete(inbuf);
+								send_success_flag = 0x00; 
+								lReceivedValue = 0 ; 
+							}
+							else
+							{
+								printf("recv_err != ERR_OK \r\n");
+							}
 						}
-					}
-					else if((recv_err == ERR_TIMEOUT)&&(send_success_flag == 0x01)) 
-					{
-						send_success_flag = 0x00;
-						printf("recv_err == %d\r\n",recv_err);
-						netconn_close(tcp_clientconn);
-						netbuf_delete(inbuf);
-						netconn_delete(tcp_clientconn);
-						break;
+						else if((recv_err == ERR_TIMEOUT)&&(send_success_flag == 0x01)) 
+						{
+							send_success_flag = 0x00;
+							printf("recv_err == %d\r\n",recv_err);
+							netconn_close(tcp_clientconn);
+							netbuf_delete(inbuf);
+							netconn_delete(tcp_clientconn);
+							break;
+						}
 					}
 				}
 			}

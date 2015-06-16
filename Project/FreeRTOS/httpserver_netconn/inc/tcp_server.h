@@ -103,10 +103,6 @@ extern PACKET_STRUCT pcket_struct;
 #define BrwLen              7
 #define BnoChl              0xA7
 #define BnoLen              3
-#define DealDataChl         0xA9
-#define DealDataLen         4
-#define DealTimeChl         0xAA
-#define DealTimeLen         3
 #define DevAraeChl          0xAC 
 #define DevAraeLen          3
 #define DevSiteChl          0xAD
@@ -122,8 +118,8 @@ extern PACKET_STRUCT pcket_struct;
 #define MacChl              0xC9
 #define MacLen              8
 
-#define Totoal_SignIn_Lenth TidLen+NomiNumLen+BnoLen+BrwLen+DealDataLen+DealTimeLen+DevAraeLen\
-							+DevSiteLen+AppVerLen+ParaFileVerLen+BusiDatFileVerLen+CkStaLen+12*3
+#define Totoal_SignIn_Lenth TidLen+NomiNumLen+BnoLen+BrwLen+DevAraeLen\
+							+DevSiteLen+AppVerLen+ParaFileVerLen+BusiDatFileVerLen+CkStaLen+10*3
 
 __attribute__ ((aligned (1))) /*异常，大小端与堆栈，不用uint16_t*/
 typedef struct _SIGN_IN_STRUCT
@@ -136,16 +132,10 @@ typedef struct _SIGN_IN_STRUCT
 	uint8_t  NomiNum_Chl[NomiNumLen];
 	uint8_t  Brw;             /*交易流水线*/
 	uint8_t  Brw_Len[2];
-	uint8_t  Brw_Chl[BrwLen];	
-	uint8_t  Bno;			  /*批次号*/
+	uint8_t  Brw_Chl[BrwLen];
+	uint8_t  Bno;             /*批次号*/
 	uint8_t  Bno_Len[2];
 	uint8_t  Bno_Chl[BnoLen];
-	uint8_t  DealData;        /*交易日期*/
-	uint8_t  DealData_Len[2];
-	uint8_t  DealData_Chl[DealDataLen];
-	uint8_t  DealTime;        /*交易时间*/
-	uint8_t  DealTime_Len[2];
-	uint8_t  DealTime_Chl[DealTimeLen];
 	uint8_t  DevArae;         /*终端所在区域编号*/ 
 	uint8_t  DevArae_Len[2];
 	uint8_t  DevArae_Chl[DevAraeLen];
@@ -154,7 +144,7 @@ typedef struct _SIGN_IN_STRUCT
 	uint8_t  DevSite_Chl[DevSiteLen]; 
 	uint8_t  AppVer;          /*应用程序版本*/
 	uint8_t  AppVer_Len[2];
-	uint8_t  AppVer_Chl[AppVerLen]; 	
+	uint8_t  AppVer_Chl[AppVerLen];
 	uint8_t  ParaFileVer;     /*参数文件版本*/ 
 	uint8_t  ParaFileVer_Len[2];
 	uint8_t  ParaFileVer_Chl[ParaFileVerLen];
@@ -178,7 +168,7 @@ typedef union _SignIn_Union
 #define NomiNameChl         0xA4
 #define NomiNameLen         20
 #define AppVerChl           0xC2
-#define AppVerLen           8               
+#define AppVerLen           8
 #define ParaFileVerChl      0xC3
 #define ParaFileVerLen      8
 #define BusiDatFileVerChl   0xC4
@@ -304,9 +294,9 @@ typedef union _MealDetail_Union
 /*req*/
 typedef struct _MEAL_DETAIL_REQ_STRUCT
 {
-	uint8_t MealID[4];     
-	uint8_t MealName[20];  
-	uint8_t MealCnt[2];    
+	uint8_t MealID[4];
+	uint8_t MealName[20];
+	uint8_t MealCnt[2];
 	uint8_t MealPrice[6]; 
 	uint8_t MealType[4];
 	uint8_t MealStatus;  //每个餐品的对比状态
@@ -322,6 +312,10 @@ typedef union _MealDetailReq_Union
 /*-------------------------------MealCompReq-------------------end*/
 
 /*start--------------------------TakemealReq----------------------*/
+#define DealDataChl         0xA9
+#define DealDataLen         4
+#define DealTimeChl         0xAA
+#define DealTimeLen         3
 #define TradvolChl          0xB0
 #define TradvolLen          6
 #define MealIdChl           0xB1
@@ -359,10 +353,10 @@ typedef struct _TAKE_MEAL_STRUCT
 {
 	uint8_t Tid;             /*终端TID码*/
 	uint8_t Tid_Len[2]; 
-	uint8_t Tid_Chl[TidLen]; 	
+	uint8_t Tid_Chl[TidLen];
 	uint8_t Brw;             /*交易流水线*/
 	uint8_t Brw_Len[2];
-	uint8_t Brw_Chl[BrwLen];	
+	uint8_t Brw_Chl[BrwLen];
 	uint8_t Bno;             /*批次号*/
 	uint8_t Bno_Len[2];
 	uint8_t Bno_Chl[BnoLen];
@@ -383,13 +377,13 @@ typedef struct _TAKE_MEAL_STRUCT
 	uint8_t MealQty_Chl[MealQtyLen];
 	uint8_t MealName;        /*餐品名称*/
 	uint8_t MealName_Len[2];
-	uint8_t MealName_Chl[MealNameLen];	
+	uint8_t MealName_Chl[MealNameLen];
 	uint8_t MealPrice;       /*餐品价格*/
 	uint8_t MealPrice_Len[2];
 	uint8_t MealPrice_Chl[MealPriceLen];
 	uint8_t PayType;         /*支付方式*/
 	uint8_t PayType_Len[2];
-	uint8_t PayType_Chl[PayTypeLen];	
+	uint8_t PayType_Chl[PayTypeLen];
 	uint8_t Change;          /*找零金额*/
 	uint8_t Change_Len[2];
 	uint8_t Change_Chl[ChangeLen];
@@ -446,10 +440,10 @@ typedef struct _STATU_UPLOAD_STRUCT
 {
 	uint8_t Tid;             /*终端TID码*/
 	uint8_t Tid_Len[2]; 
-	uint8_t Tid_Chl[TidLen]; 	
+	uint8_t Tid_Chl[TidLen];
 	uint8_t Brw;             /*交易流水号*/
 	uint8_t Brw_Len[2];
-	uint8_t Brw_Chl[BrwLen];	  
+	uint8_t Brw_Chl[BrwLen];
 	uint8_t Bno;             /*交易批次号*/
 	uint8_t Bno_Len[2];
 	uint8_t Bno_Chl[BnoLen];
@@ -471,7 +465,7 @@ typedef struct _STATU_UPLOAD_REQ_STRUCT
 {
 	uint8_t  Ack;            /*应答码*/
 	uint16_t Ack_Len;
-	uint8_t  Ack_Chl[AckLen];    
+	uint8_t  Ack_Chl[AckLen];
 }STATU_UPLOAD_REQ_STRUCT;
 
 /*-------------------------------StateUploadReq----------------end*/
@@ -512,7 +506,7 @@ typedef struct _ECHO_REQ_STRUCT
 	uint8_t  DealTime_Chl[DealTimeLen];
 	uint8_t  Ack;            /*应答码*/
 	uint16_t Ack_Len;
-	uint8_t  Ack_Chl[AckLen];    	
+	uint8_t  Ack_Chl[AckLen];
 }ECHO_REQ_STRUCT;
 
 
@@ -537,7 +531,7 @@ typedef struct _ECHO_REQ_STRUCT
 #define LOCAIL_PORT     9014
 
 /*Define bit have some data to send*/
-#define SignInFlag			0X80 
+#define SignInFlag          0X80 
 #define MealCompFalg        0x40
 #define StatuUploadFlag     0x20
 #define TakeMealFlag        0x10

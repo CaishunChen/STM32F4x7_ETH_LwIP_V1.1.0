@@ -88,6 +88,20 @@ typedef enum
   COM1 = 0,
   COM2 = 1
 } COM_TypeDef;
+
+typedef enum 
+{  
+  BUTTON_WAKEUP = 0,
+  BUTTON_TAMPER = 1,
+  BUTTON_KEY = 2,
+  BUTTON_RIGHT = 3,
+  BUTTON_LEFT = 4,
+  BUTTON_UP = 5,
+  BUTTON_DOWN = 6,
+  BUTTON_SEL = 7
+} Button_TypeDef;
+
+
 /**
   * @}
   */ 
@@ -164,6 +178,43 @@ typedef enum
 
 
 /****************************************************************/
+
+/**
+  * @}
+  */ 
+  
+/** @addtogroup STM324xG_EVAL_LOW_LEVEL_BUTTON
+  * @{
+  */  
+#define BUTTONn                          3 /*!< Joystick pins are connected to 
+                                                an IO Expander (accessible through 
+                                                I2C1 interface) */
+
+/**
+ * @brief Wakeup push-button
+ */
+#define WAKEUP_BUTTON_PIN                GPIO_Pin_0
+#define WAKEUP_BUTTON_GPIO_PORT          GPIOA
+#define WAKEUP_BUTTON_GPIO_CLK           RCC_AHB1Periph_GPIOA
+#define WAKEUP_BUTTON_EXTI_LINE          EXTI_Line0
+#define WAKEUP_BUTTON_EXTI_PORT_SOURCE   EXTI_PortSourceGPIOA
+#define WAKEUP_BUTTON_EXTI_PIN_SOURCE    EXTI_PinSource0
+#define WAKEUP_BUTTON_EXTI_IRQn          EXTI0_IRQn 
+
+/**
+ * @brief Key push-button
+ */
+#define KEY_BUTTON_PIN                   GPIO_Pin_6
+#define KEY_BUTTON_GPIO_PORT             GPIOE
+#define KEY_BUTTON_GPIO_CLK              RCC_AHB1Periph_GPIOE
+#define KEY_BUTTON_EXTI_LINE             EXTI_Line6
+#define KEY_BUTTON_EXTI_PORT_SOURCE      EXTI_PortSourceGPIOE
+#define KEY_BUTTON_EXTI_PIN_SOURCE       EXTI_PinSource6
+#define KEY_BUTTON_EXTI_IRQn             EXTI15_10_IRQn
+/**
+  * @}
+  */ 
+
 /** @addtogroup STM324x7I_EVAL_LOW_LEVEL_COM
   * @{
   */
@@ -327,6 +378,10 @@ void SD_LowLevel_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize);
 void sEE_LowLevel_DeInit(void);
 void sEE_LowLevel_Init(void); 
 void sEE_LowLevel_DMAConfig(uint32_t pBuffer, uint32_t BufferSize, uint32_t Direction);
+
+/******----------***********/
+void STM_EVAL_PBInit(Button_TypeDef Button, ButtonMode_TypeDef Button_Mode);
+uint32_t STM_EVAL_PBGetState(Button_TypeDef Button);
 /**
   * @}
   */

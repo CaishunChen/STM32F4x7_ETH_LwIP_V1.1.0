@@ -136,7 +136,7 @@
  * @brief Configuration of the Cortex-M4 Processor and Core Peripherals 
  */
 #define __CM4_REV                 0x0001  /*!< Core revision r0p1                            */
-#define __MPU_PRESENT             1       /*!< STM32F4XX provides an MPU                     */
+#define __MPU_PRESENT             0       /*!< STM32F4XX provides an MPU                     */
 #define __NVIC_PRIO_BITS          4       /*!< STM32F4XX uses 4 Bits for the Priority Levels */
 #define __Vendor_SysTickConfig    0       /*!< Set to 1 if different SysTick Config is used  */
 #define __FPU_PRESENT             1       /*!< FPU present                                   */
@@ -261,6 +261,7 @@ typedef enum IRQn
 #include "core_cm4.h"             /* Cortex-M4 processor and core peripherals */
 #include "system_stm32f4xx.h"
 #include <stdint.h>
+#include <stdbool.h>
 
 /** @addtogroup Exported_types
   * @{
@@ -297,8 +298,6 @@ typedef __IO uint8_t  vu8;
 typedef __I uint32_t vuc32;  /*!< Read Only */
 typedef __I uint16_t vuc16;  /*!< Read Only */
 typedef __I uint8_t vuc8;   /*!< Read Only */
-
-typedef enum {false = 0, true= !false} bool;
 
 typedef enum {RESET = 0, SET = !RESET} FlagStatus, ITStatus;
 

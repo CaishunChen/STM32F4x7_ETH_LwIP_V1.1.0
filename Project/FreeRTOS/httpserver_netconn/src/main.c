@@ -53,7 +53,12 @@
 #include "start_task.h"
 #include "tkmeal_task.h"
 #include "wanwuyun_task.h"
+#include "usbmsc_task.h"
 #include "rtc.h"
+#include "intel_flash.h"
+#include "bootmode.h"
+#include "img_utils.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /*--------------- LCD Messages ---------------*/
@@ -79,6 +84,8 @@ void ToggleLed4(void * pvParameters);
 void KeyScan4(void * pvParameters);
 void Main_task(void * pvParameters);
 
+void iap_load_app(void);
+
 /*extern */
 extern void tcpecho_init(void);
 
@@ -91,6 +98,7 @@ void Dgus_task(void * pvParameters);
   * @param  None
   * @retval None
   */
+
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured to 
@@ -99,18 +107,21 @@ int main(void)
 		 To reconfigure the default setting of SystemInit() function, refer to
 		 system_stm32f4xx.c file
 	   */
+	/* iap check the gpio and load app */   
+	iap_load_app();	
 
 	/* Configures the priority grouping: 4 bits pre-emption priority */
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-	
+
 	/* Init task */
-	xTaskCreate(Main_task,(int8_t *)"Main", configMINIMAL_STACK_SIZE * 2, NULL,MAIN_TASK_PRIO, NULL);
+	xTaskCreate(Main_task,(int8_t *)"Main", configMINIMAL_STACK_SIZE , NULL,MAIN_TASK_PRIO, NULL);
 	
 	/* Start scheduler */
 	vTaskStartScheduler();
 
 	/* We should never get here as control is now taken by the scheduler */
 	for( ;; );
+	
 
 }
 
@@ -152,18 +163,20 @@ void Main_task(void * pvParameters)
 #ifdef SERIAL_DEBUG
 	DebugComPort_Init();
 #endif
-
 	/*Initialize LCD and Leds */ 
 	LCD_LED_Init();
 
 	/* configure Ethernet (GPIOs, clocks, MAC, DMA) */ 
-	ETH_BSP_Config();
+	//ETH_BSP_Config();
 
 	/*Initialize RTC */ 
 	AppRTC_Init();
 	
+	/*Initialize USB */
+	USB_MSC_Init();
+	
 	/* Initilaize the LwIP stack */
-	LwIP_Init();
+	//LwIP_Init();
 
 	/* Initialize webserver demo */
 	//http_server_netconn_init();
@@ -172,21 +185,21 @@ void Main_task(void * pvParameters)
 	//tcpecho_init();
 	
 	/* Initialize tcpcliennt demo */
-	Tcpclient_Init();
+	//Tcpclient_Init();
 	
 	/* Initialize wanwuyun demo */
-    Wanwuyun_Init();
-	
+    //Wanwuyun_Init();
+	 
 #ifdef USE_DHCP
   /* Start DHCPClient */
-	xTaskCreate(LwIP_DHCP_task, (int8_t *) "DHCP", configMINIMAL_STACK_SIZE * 2, NULL,DHCP_TASK_PRIO, NULL);
+	xTaskCreate(LwIP_DHCP_task, (int8_t *) "DHCP", configMINIMAL_STACK_SIZE , NULL,DHCP_TASK_PRIO, NULL);
 #endif
 
 	/* Start toogleLed4 task : Toggle LED4  every 250ms */
-	xTaskCreate(ToggleLed4, (int8_t *) "LED4", DEFAULT_THREAD_STACKSIZE, NULL, LED_TASK_PRIO, NULL);
+	//xTaskCreate(ToggleLed4, (int8_t *) "LED4", DEFAULT_THREAD_STACKSIZE, NULL, LED_TASK_PRIO, NULL);
 	
 	/* Start keyscan4 task : scan 4 kinds of keys  every 250ms */
-	xTaskCreate(KeyScan4, (int8_t *) "KEY4", configMINIMAL_STACK_SIZE, NULL, KEY_TASK_PRIO, NULL);
+	//xTaskCreate(KeyScan4, (int8_t *) "KEY4", configMINIMAL_STACK_SIZE, NULL, KEY_TASK_PRIO, NULL);
 	
 	for( ;; )
 	{
@@ -205,24 +218,23 @@ SENSOR_STRUCT  Sensor,*pSensor;
 //如何加入浮点运算
 void ToggleLed4(void * pvParameters)
 {
-	
 	//static portCHAR PAGE_BODY[512]={0x00};
-	memcpy(Sensor.dev_id,"stm32_test",strlen("stm32_test"));
-	Sensor.temperature[0] = 25.6;
-	Sensor.latitude[0] = 143.5;
-	Sensor.longitude[0] = 145.123;
+//	memcpy(Sensor.dev_id,"stm32_test",strlen("stm32_test"));
+//	Sensor.temperature[0] = 25.6;
+//	Sensor.latitude[0] = 143.5;
+//	Sensor.longitude[0] = 145.123;
 	for( ;; )
 	{
 		/* Toggle LED4 each 250ms */
 		STM_EVAL_LEDToggle(LED4);
-		//RTC_TimeShow(&DataTime); 
-		pSensor = &Sensor;
-		xQueueSend(pRxSensor_xQueue,( void * )&pSensor,( portTickType )10);
+		RTC_TimeShow(&DataTime); 
+//		pSensor = &Sensor;
+//		xQueueSend(pRxSensor_xQueue,( void * )&pSensor,( portTickType )10);
 		//串口输出任务的状态
 		//vTaskList((signed char *)(PAGE_BODY ));
 		//vPrintString("%s",PAGE_BODY);
 		//memset(PAGE_BODY,0x00,sizeof(PAGE_BODY));
-		vTaskDelay(500);
+		vTaskDelay(200);
 	}
 }
 
@@ -233,6 +245,7 @@ void ToggleLed4(void * pvParameters)
   */
 extern xQueueHandle xQueue;
 extern long lReceivedValue;
+#if 0
 void KeyScan4(void * pvParameters)
 {
 	long cmd;
@@ -274,7 +287,41 @@ void KeyScan4(void * pvParameters)
 		vTaskDelay(250);
 	}
 }
-
+#else
+void KeyScan4(void * pvParameters)
+{
+	portBASE_TYPE xStatus;
+	
+	JOYState_GPIO_Init();
+	memcpy(Sensor.dev_id,"stm32_test",strlen("stm32_test"));
+	Sensor.temperature[0] = 25.6;
+	Sensor.latitude[0] = 143.5;
+	Sensor.longitude[0] = 145.123;
+	for(;;)
+	{
+		if((Read_JOYState())>0)
+		{
+			pSensor = &Sensor;
+			xQueueSend(pRxSensor_xQueue,&pSensor,( portTickType )1);
+			if(xStatus!= pdPASS)
+			{
+				switch(xStatus)
+				{
+					case errQUEUE_FULL:vPrintString("errQUEUE_FULL.\r\n");break;
+					case errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY:vPrintString("errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY.\r\n");break;
+					case errNO_TASK_TO_RUN:vPrintString("errNO_TASK_TO_RUN.\r\n");break;
+					case errQUEUE_BLOCKED:vPrintString("errQUEUE_BLOCKED.\r\n");break;
+					case errQUEUE_YIELD:vPrintString("errQUEUE_YIELD.\r\n");break;
+					default:break;
+				}
+			}
+			taskYIELD();
+			vTaskDelay(100);
+		}
+		vTaskDelay(250);	
+	}		
+}
+#endif
 /**
   * @brief  Initializes the STM324xG-EVAL's LCD and LEDs resources.
   * @param  None
@@ -310,6 +357,51 @@ void LCD_LED_Init(void)
 	LCD_DisplayStringLine(Line3, (uint8_t*)MESSAGE4);  
 #endif
 }
+
+#if 1	
+typedef  void (*pFunction)(void);
+uint32_t JumpAddress;
+void iap_load_app(void)
+{
+	register pFunction Jump_To_Application;
+	JOYState_GPIO_Init();
+	if (Read_JOYState()==0)
+	{	
+		if (((*(__IO uint32_t*)USER_FLASH_FIRST_PAGE_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+		{
+		  /* Jump to user application */
+		  JumpAddress = *(__IO uint32_t*) (USER_FLASH_FIRST_PAGE_ADDRESS + 4);
+		  Jump_To_Application = (pFunction) JumpAddress;
+		  /* Initialize user application's Stack Pointer */
+		  
+		  __set_MSP(*(__IO uint32_t*) USER_FLASH_FIRST_PAGE_ADDRESS);
+		  Jump_To_Application();
+		}
+		else
+		{
+		  /* Otherwise, do nothing */
+		  STM_EVAL_LEDOn(LED3);
+		  /* do nothing */
+		  while(1);
+		}	
+	}
+}
+
+/*******************************************************************************  
+* Function Name  : SystemReset  
+* Description    : Configures the port pin connected to the push button. GPIO_D_4  
+* Input          : None  
+* Output         : None  
+* Return         : None  
+*******************************************************************************/  
+void SoftReset(void) 
+{  
+	__set_FAULTMASK(1);      // 关闭所有中端
+	 NVIC_SystemReset();	// 复位
+}
+
+#endif
+
 
 #ifdef  USE_FULL_ASSERT
 

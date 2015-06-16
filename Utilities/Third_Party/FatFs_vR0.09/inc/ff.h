@@ -23,6 +23,7 @@ extern "C" {
 
 #include "integer.h"	/* Basic integer types */
 #include "ffconf.h"		/* FatFs configuration options */
+#include "semphr.h"
 
 #if _FATFS != _FFCONF
 #error Wrong configuration file (ffconf.h).

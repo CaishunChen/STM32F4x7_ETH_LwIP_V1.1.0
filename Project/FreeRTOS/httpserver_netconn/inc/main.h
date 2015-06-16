@@ -35,25 +35,27 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx.h"
+#include <stm32f4xx.h>
 #include "stm32f4x7_eth_bsp.h"
+
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define USE_LCD        /* enable LCD  */  
-#define USE_DHCP       /* enable DHCP, if disabled static address is used*/
+//#define USE_LCD        /* enable LCD  */  
+//#define USE_DHCP       /* enable DHCP, if disabled static address is used*/
    
 /* Uncomment SERIAL_DEBUG to enables retarget of printf to  serial port (COM1 on STM32 evalboard) 
 for debug purpose */   
 #define SERIAL_DEBUG 
  
+ 
 /* MAC ADDRESS*/
-#define MAC_ADDR0   02
-#define MAC_ADDR1   00
-#define MAC_ADDR2   00
-#define MAC_ADDR3   00
-#define MAC_ADDR4   00
-#define MAC_ADDR5   00
+#define MAC_ADDR0   0x00
+#define MAC_ADDR1   0x24
+#define MAC_ADDR2   0x7E
+#define MAC_ADDR3   0xDD
+#define MAC_ADDR4   0xBE
+#define MAC_ADDR5   0x7C
  
 /*Static IP ADDRESS*/
 #define IP_ADDR0   192

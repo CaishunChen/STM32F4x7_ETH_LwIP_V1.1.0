@@ -90,7 +90,7 @@
 #endif
 
 
-#define configUSE_PREEMPTION			0  //配置抢占式内核
+#define configUSE_PREEMPTION			1  //配置抢占式内核
 #define configUSE_IDLE_HOOK				0
 #define configUSE_TICK_HOOK				0
 #define configCPU_CLOCK_HZ				( SystemCoreClock )

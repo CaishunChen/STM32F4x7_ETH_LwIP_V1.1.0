@@ -35,7 +35,7 @@
 /   3: f_lseek is removed in addition to 2. */
 
 
-#define	_USE_STRFUNC	1	/* 0:Disable or 1/2:Enable */
+#define	_USE_STRFUNC	2	/* 0:Disable or 1/2:Enable */
 /* To enable string functions, set _USE_STRFUNC to 1 or 2. */
 
 
@@ -89,7 +89,7 @@
 */
 
 
-#define	_USE_LFN	0		/* 0 to 3 */
+#define	_USE_LFN	3		/* 0 to 3 */
 #define	_MAX_LFN	255		/* Maximum LFN length to handle (12 to 255) */
 /* The _USE_LFN option switches the LFN support.
 /
@@ -109,7 +109,7 @@
 /  enable LFN feature and set _LFN_UNICODE to 1. */
 
 
-#define _FS_RPATH	2		/* 0 to 2 */
+#define _FS_RPATH	1		/* 0 to 2 */
 /* The _FS_RPATH option configures relative path feature.
 /
 /   0: Disable relative path feature and remove related functions.
@@ -124,7 +124,7 @@
 / Physical Drive Configurations
 /----------------------------------------------------------------------------*/
 
-#define _VOLUMES	2
+#define _VOLUMES	3
 /* Number of volumes (logical drives) to be used. */
 
 
@@ -166,10 +166,10 @@
 
 /* Include a header file here to define sync object types on the O/S */
 /* #include <windows.h>, <ucos_ii.h.h>, <semphr.h> or ohters. */
-
-#define _FS_REENTRANT	0		/* 0:Disable or 1:Enable */
+#include "freeRTOS.h"
+#define _FS_REENTRANT	1		/* 0:Disable or 1:Enable */
 #define _FS_TIMEOUT		1000	/* Timeout period in unit of time ticks */
-#define	_SYNC_t			HANDLE	/* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
+#define	_SYNC_t			xSemaphoreHandle	/* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 
 /* The _FS_REENTRANT option switches the reentrancy of the FatFs module.
 /

@@ -31,15 +31,16 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "print.h"
 
-#define vPrintString  printf
+#define vPrintString  if(1)print
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 #ifdef SERIAL_DEBUG
-  void DebugComPort_Init(void);
-
+  void 	  DebugComPort_Init(void);
+  uint8_t Debug_Putchar(uint8_t ch);
 #endif
 
 #endif /* __SERIAL_DEBUG_H */  

@@ -1661,7 +1661,8 @@ void get_fileinfo (		/* No return code */
 				tp[i++] = (TCHAR)w;
 			}
 		}
-		tp[i] = 0;	/* Terminate the LFN str by a \0 */
+		__nop();
+		//tp[i] = 0;	/* Terminate the LFN str by a \0  0=>'\0'  字符串结束的标志,加了这个后程序出错*/
 	}
 #endif
 }
